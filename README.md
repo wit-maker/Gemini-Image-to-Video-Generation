@@ -2,73 +2,61 @@
 
 Claude Code SDK と kamuicode MCP を活用したAI生成ワークフロー集
 
-## 概要
+## 🌟 概要
 
-このリポジトリは、GitHub ActionsでClaude Code SDKとkamuicode MCPを使用してAIコンテンツを生成するワークフローテンプレートを提供します。
+GitHub ActionsでClaude Code SDKとkamuicode MCPを使用してAIコンテンツを生成するワークフローテンプレート集です。目的に応じて最適なワークフローを選択できます。
 
-## 含まれるワークフロー
+## 📦 ワークフロー一覧
 
-### 🎵 Music Video Generation Workflow
-AIを使用した自動音楽動画生成ワークフロー
+### 🏗️ [Module Workflow](./module-workflow/)
+モジュール化されたAI動画生成システム。再利用可能なコンポーネントとマルチエージェント協調により、高品質なコンテンツを効率的に生成します。
 
-- **Google Lyria** による音楽生成（30-40秒、高品質）
-- **Imagen4 Fast** による画像生成（3枚）
-- **Hailuo-02 Pro** による動画生成（3つの5秒動画）
-- **FFmpeg** による動画編集・統合
-- 自動プルリクエスト作成
+**⚠️ 注意**: モジュールは再利用性と品質向上のため継続的に調整される可能性があります。
 
-詳細: [music-video-workflow/](./music-video-workflow/)
+### 🎵 [Music Video Workflow](./music-video-workflow/)
+音楽と動画を統合した音楽動画を自動生成。Google Lyria + Imagen4 + Hailuo-02 Proの組み合わせ。
 
-### 📹 Video Generation Workflow
-AIを使用した自動動画生成ワークフロー
+### 📹 [Video Workflow Template](./video-workflow-template/)
+基本的な動画生成ワークフロー。学習用途や簡単な動画作成に最適。
 
-- **Imagen4 Ultra** による高品質画像生成
-- **Vidu Q1** による参照動画生成
-- 手動実行とIssue経由の両方に対応
-- 自動プルリクエスト作成
+### 🎬 [Video with Background Removal](./video-background-removal-workflow/)
+背景除去機能を含む動画生成ワークフロー。
 
-詳細: [video-workflow-template/](./video-workflow-template/)
+### 🔍 [Gemini I2V Analysis](./gemini-i2v-workflow/)
+Gemini APIと連携した画像から動画生成の分析ワークフロー。
 
-### 🎬 Video with Background Removal Workflow
-背景除去機能を含む動画生成ワークフロー
+## 🚀 クイックスタート
 
-- 背景除去処理
-- 動画生成
-- 自動プルリクエスト作成
+1. **用途に合うワークフローを選択**
+2. **該当フォルダのSETUP.mdを参照**
+3. **必要なSecretsとMCP設定を追加**
+4. **ワークフローを実行**
 
-詳細: [video-background-removal-workflow/](./video-background-removal-workflow/)
+## 📋 ワークフロー選択ガイド
 
-### 🔍 Gemini I2V Analysis Workflow
-Gemini APIを使用した画像から動画生成の分析ワークフロー
+| 用途 | 推奨ワークフロー | 特徴 |
+|------|------------------|------|
+| 高品質・大規模生成 | Module Workflow | モジュール化、マルチエージェント |
+| 音楽動画作成 | Music Video | 音楽+動画統合 |
+| 学習・基本用途 | Video Template | シンプル、導入しやすい |
+| 背景除去が必要 | Background Removal | 特殊処理対応 |
+| 分析重視 | Gemini I2V | Gemini統合分析 |
 
-- 画像分析
-- 動画生成最適化
-- 品質評価
-
-詳細: [gemini-i2v-workflow/](./gemini-i2v-workflow/)
-
-## 必要な環境
+## 🛠️ 必要な環境
 
 - Claude Code SDK
 - kamuicode MCP
 - Anthropic API Key
 - GitHub Actions
 
-## クイックスタート
-
-1. 使用したいワークフローテンプレートを選択
-2. テンプレート内のファイルを自分のリポジトリにコピー
-3. 必要なSecretsとMCP設定を追加
-4. ワークフローを実行
-
-## ライセンス
-
-MIT License
-
-## 貢献
+## 🤝 貢献
 
 新しいワークフローテンプレートの追加やバグ修正のPRを歓迎します。
 
+## 📄 ライセンス
+
+MIT License
+
 ---
 
-🤖 Powered by [Claude Code SDK](https://github.com/anthropics/claude-code) & [kamuicode MCP](https://www.kamui.ai/ja)
+🤖 **Powered by [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code) & kamuicode MCP**

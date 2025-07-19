@@ -2,73 +2,61 @@
 
 AI content generation workflow templates using Claude Code SDK and kamuicode MCP
 
-## Overview
+## 🌟 Overview
 
-This repository provides workflow templates for generating AI content using Claude Code SDK and kamuicode MCP in GitHub Actions.
+A collection of workflow templates for generating AI content using Claude Code SDK and kamuicode MCP in GitHub Actions. Choose the optimal workflow based on your specific needs.
 
-## Included Workflows
+## 📦 Workflow List
 
-### 🎵 Music Video Generation Workflow
-AI-powered automatic music video generation workflow
+### 🏗️ [Module Workflow](./module-workflow/)
+Modularized AI video generation system. Efficiently generates high-quality content through reusable components and multi-agent collaboration.
 
-- **Google Lyria** music generation (30-40 seconds, high quality)
-- **Imagen4 Fast** image generation (3 images)
-- **Hailuo-02 Pro** video generation (3x 5-second videos)
-- **FFmpeg** video editing and integration
-- Automatic pull request creation
+**⚠️ Note**: Modules may be continuously adjusted for improved reusability and quality.
 
-Details: [music-video-workflow/](./music-video-workflow/)
+### 🎵 [Music Video Workflow](./music-video-workflow/)
+Automatic music video generation combining audio and video. Google Lyria + Imagen4 + Hailuo-02 Pro integration.
 
-### 📹 Video Generation Workflow
-AI-powered automatic video generation workflow
+### 📹 [Video Workflow Template](./video-workflow-template/)
+Basic video generation workflow. Perfect for learning purposes and simple video creation.
 
-- **Imagen4 Ultra** high-quality image generation
-- **Vidu Q1** reference video generation
-- Manual execution and Issue-triggered support
-- Automatic pull request creation
+### 🎬 [Video with Background Removal](./video-background-removal-workflow/)
+Video generation workflow with background removal functionality.
 
-Details: [video-workflow-template/](./video-workflow-template/)
+### 🔍 [Gemini I2V Analysis](./gemini-i2v-workflow/)
+Image-to-video generation analysis workflow integrated with Gemini API.
 
-### 🎬 Video with Background Removal Workflow
-Video generation workflow with background removal functionality
+## 🚀 Quick Start
 
-- Background removal processing
-- Video generation
-- Automatic pull request creation
+1. **Select a workflow for your use case**
+2. **Refer to SETUP.md in the respective folder**
+3. **Add required Secrets and MCP configuration**
+4. **Run the workflow**
 
-Details: [video-background-removal-workflow/](./video-background-removal-workflow/)
+## 📋 Workflow Selection Guide
 
-### 🔍 Gemini I2V Analysis Workflow
-Image-to-video generation analysis workflow using Gemini API
+| Use Case | Recommended Workflow | Features |
+|----------|---------------------|----------|
+| High-quality, large-scale generation | Module Workflow | Modular, multi-agent |
+| Music video creation | Music Video | Audio+video integration |
+| Learning, basic use | Video Template | Simple, easy to adopt |
+| Background removal needed | Background Removal | Special processing |
+| Analysis-focused | Gemini I2V | Gemini integration |
 
-- Image analysis
-- Video generation optimization
-- Quality evaluation
-
-Details: [gemini-i2v-workflow/](./gemini-i2v-workflow/)
-
-## Requirements
+## 🛠️ Requirements
 
 - Claude Code SDK
 - kamuicode MCP
 - Anthropic API Key
 - GitHub Actions
 
-## Quick Start
-
-1. Select the workflow template you want to use
-2. Copy the template files to your repository
-3. Add required Secrets and MCP configuration
-4. Run the workflow
-
-## License
-
-MIT License
-
-## Contributing
+## 🤝 Contributing
 
 We welcome PRs for new workflow templates and bug fixes.
 
+## 📄 License
+
+MIT License
+
 ---
 
-🤖 Powered by [Claude Code SDK](https://github.com/anthropics/claude-code) & [kamuicode MCP](https://www.kamui.ai/ja)
+🤖 **Powered by [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code) & kamuicode MCP**
