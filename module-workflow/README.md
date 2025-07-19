@@ -26,14 +26,13 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 1. `orchestrator-video-generation.yml`
 **【基本1動画版】線形ワークフロー**
 
-**含まれるジョブ:**
-```yaml
-- setup: ブランチ・フォルダ作成
-- planning: AI企画（Claude Code SDK）
-- image-generation: 画像生成（Imagen4 Ultra）
-- video-prompt-optimization: プロンプト最適化
-- video-generation: 動画生成（Vidu Q1）
-- create-pr: プルリクエスト作成
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>AI企画 CCSDK]
+    B --> C[🎨 Image Generation<br/>画像生成 Imagen4 Ultra + CCSDK]
+    C --> D[⚙️ Video Prompt Optimization<br/>プロンプト最適化 CCSDK]
+    D --> E[🎬 Video Generation<br/>動画生成 Vidu Q1 + CCSDK]
+    E --> F[📝 Create PR<br/>プルリクエスト作成]
 ```
 
 **特徴:** 
@@ -44,17 +43,17 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 2. `orchestrator-video-generation-dual.yml`  
 **【2動画版】並列処理ワークフロー**
 
-**含まれるジョブ:**
-```yaml
-- setup: ブランチ・フォルダ作成
-- planning: AI企画（total_videos: '2'）
-- image-generation-1: 1番目の画像生成
-- image-generation-2: 2番目の画像生成（並列）
-- video-prompt-optimization-1: 1番目のプロンプト最適化
-- video-prompt-optimization-2: 2番目のプロンプト最適化（並列）
-- video-generation-1: 1番目の動画生成
-- video-generation-2: 2番目の動画生成（並列）
-- create-pr: プルリクエスト作成
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>AI企画 CCSDK total_videos: 2]
+    B --> C1[🎨 Image Generation 1<br/>Imagen4 Ultra + CCSDK]
+    B --> C2[🎨 Image Generation 2<br/>Imagen4 Ultra + CCSDK]
+    C1 --> D1[⚙️ Video Prompt Optimization 1<br/>CCSDK]
+    C2 --> D2[⚙️ Video Prompt Optimization 2<br/>CCSDK]
+    D1 --> E1[🎬 Video Generation 1<br/>Vidu Q1 + CCSDK]
+    D2 --> E2[🎬 Video Generation 2<br/>Vidu Q1 + CCSDK]
+    E1 --> F[📝 Create PR<br/>プルリクエスト作成]
+    E2 --> F
 ```
 
 **特徴:**
@@ -65,16 +64,19 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 3. `orchestrator-video-generation-dual-with-analysis.yml`
 **【2動画＋分析版】品質評価付きワークフロー**
 
-**含まれるジョブ:**
-```yaml
-- setup: ブランチ・フォルダ作成
-- planning: AI企画（total_videos: '2'）
-- image-generation-1/2: 並列画像生成
-- video-prompt-optimization-1/2: 並列プロンプト最適化
-- video-generation-1/2: 並列動画生成
-- video-analysis-1: 1番目の動画品質分析（Gemini Vision）
-- video-analysis-2: 2番目の動画品質分析（Gemini Vision）
-- create-pr: プルリクエスト作成
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>AI企画 CCSDK total_videos: 2]
+    B --> C1[🎨 Image Generation 1<br/>Imagen4 Ultra + CCSDK]
+    B --> C2[🎨 Image Generation 2<br/>Imagen4 Ultra + CCSDK]
+    C1 --> D1[⚙️ Video Prompt Optimization 1<br/>CCSDK]
+    C2 --> D2[⚙️ Video Prompt Optimization 2<br/>CCSDK]
+    D1 --> E1[🎬 Video Generation 1<br/>Vidu Q1 + CCSDK]
+    D2 --> E2[🎬 Video Generation 2<br/>Vidu Q1 + CCSDK]
+    E1 --> G1[🔍 Video Analysis 1<br/>品質分析 GCA + Gemini Vision]
+    E2 --> G2[🔍 Video Analysis 2<br/>品質分析 GCA + Gemini Vision]
+    G1 --> F[📝 Create PR<br/>プルリクエスト作成]
+    G2 --> F
 ```
 
 **特徴:**
@@ -85,14 +87,25 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 4. `orchestrator-video-generation-quad.yml`
 **【4動画版】大規模並列ワークフロー**
 
-**含まれるジョブ:**
-```yaml
-- setup: ブランチ・フォルダ作成
-- planning: AI企画（total_videos: '4'）
-- image-generation-1/2/3/4: 4つの並列画像生成
-- video-prompt-optimization-1/2/3/4: 4つの並列プロンプト最適化
-- video-generation-1/2/3/4: 4つの並列動画生成
-- create-pr: プルリクエスト作成
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>AI企画 CCSDK total_videos: 4]
+    B --> C1[🎨 Image Generation 1<br/>Imagen4 Ultra + CCSDK]
+    B --> C2[🎨 Image Generation 2<br/>Imagen4 Ultra + CCSDK]
+    B --> C3[🎨 Image Generation 3<br/>Imagen4 Ultra + CCSDK]
+    B --> C4[🎨 Image Generation 4<br/>Imagen4 Ultra + CCSDK]
+    C1 --> D1[⚙️ Video Prompt Optimization 1<br/>CCSDK]
+    C2 --> D2[⚙️ Video Prompt Optimization 2<br/>CCSDK]
+    C3 --> D3[⚙️ Video Prompt Optimization 3<br/>CCSDK]
+    C4 --> D4[⚙️ Video Prompt Optimization 4<br/>CCSDK]
+    D1 --> E1[🎬 Video Generation 1<br/>Vidu Q1 + CCSDK]
+    D2 --> E2[🎬 Video Generation 2<br/>Vidu Q1 + CCSDK]
+    D3 --> E3[🎬 Video Generation 3<br/>Vidu Q1 + CCSDK]
+    D4 --> E4[🎬 Video Generation 4<br/>Vidu Q1 + CCSDK]
+    E1 --> F[📝 Create PR<br/>プルリクエスト作成]
+    E2 --> F
+    E3 --> F
+    E4 --> F
 ```
 
 **特徴:**
@@ -103,14 +116,18 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 5. `orchestrator-gemini-i2v-generation-analysis.yml`
 **【Gemini統合版】Gemini CLI Action中心ワークフロー**
 
-**含まれるジョブ:**
-```yaml
-- setup: ブランチ・フォルダ作成
-- planning: AI企画（Gemini CLI Action）
-- image-generation: 画像生成（Imagen4 Fast + Gemini CLI Action）
-- video-generation: 動画生成（Hailuo-02 Pro + Gemini CLI Action）
-- video-analysis: 動画分析（Gemini Vision）
-- create-pr: プルリクエスト作成
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>AI企画 Gemini CLI Action]
+    B --> C[🎨 Image Generation<br/>画像生成 Imagen4 Fast + GCA]
+    C --> D[🎬 Video Generation<br/>動画生成 Hailuo-02 Pro + GCA]
+    D --> E[🔍 Video Analysis<br/>動画分析 Gemini Vision]
+    E --> F[📝 Create PR<br/>プルリクエスト作成]
+    
+    style B fill:#e1f5fe
+    style C fill:#e1f5fe
+    style D fill:#e1f5fe
+    style E fill:#e1f5fe
 ```
 
 **特徴:**
