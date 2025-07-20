@@ -135,7 +135,39 @@ graph LR
 - 異なるAIモデル組み合わせのテスト用
 - Gemini APIキーのみで動作
 
-## 🧩 モジュール詳細（10種類）
+### 6. `orchestrator-banner-advertisement-creation.yml`
+**【バナー広告作成版】AI自動バナー生成ワークフロー**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Banner Planning<br/>バナー企画 CCSDK]
+    B --> C1[🎨 Base Image 1<br/>Imagen4 Ultra + CCSDK]
+    B --> C2[🎨 Base Image 2<br/>Imagen4 Ultra + CCSDK]
+    B --> C3[🎨 Base Image 3<br/>Imagen4 Ultra + CCSDK]
+    B --> C4[🎨 Base Image 4<br/>Imagen4 Ultra + CCSDK]
+    C1 --> D1[📝 Text Overlay 1<br/>Flux Kontext Max + CCSDK]
+    C2 --> D2[📝 Text Overlay 2<br/>Flux Kontext Max + CCSDK]
+    C3 --> D3[📝 Text Overlay 3<br/>Flux Kontext Max + CCSDK]
+    C4 --> D4[📝 Text Overlay 4<br/>Flux Kontext Max + CCSDK]
+    D1 --> E[📝 Create PR<br/>プルリクエスト作成]
+    D2 --> E
+    D3 --> E
+    D4 --> E
+    
+    style B fill:#fff3e0
+    style D1 fill:#fff3e0
+    style D2 fill:#fff3e0
+    style D3 fill:#fff3e0
+    style D4 fill:#fff3e0
+```
+
+**特徴:**
+- コンセプトとテキストから最大4つのバナーを生成
+- 企画→ベース画像→テキスト合成の3段階品質管理
+- Flux Kontext Maxによる高品質テキストオーバーレイ
+- SNS、Web広告、印刷物など多用途対応
+
+## 🧩 モジュール詳細（12種類）
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
 
@@ -251,6 +283,29 @@ AI: Gemini Vision
 出力: 詳細な改善提案付き評価レポート
 ```
 
+### 📄 バナー生成モジュール
+
+#### `module-banner-planning-ccsdk.yml`
+**バナー制作企画**
+```yaml
+AI: Claude (Opus/Sonnet)
+機能: コンセプトとテキストから複数バナーの制作計画を立案
+出力: 各バナー用の画像プロンプト + レイアウト戦略
+対応: 最大8バナーまで
+特徴: テキスト配置エリアを考慮した企画設計
+```
+
+#### `module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml`
+**テキストオーバーレイ**
+```yaml
+AI: Flux Kontext Max
+機能: ベース画像に指定テキストを高品質で合成
+品質: 商用利用可能レベル
+特徴: 一字一句変更せずにテキストを配置
+用途: バナー広告、SNS投稿、プロモーション素材
+処理: レイアウト・フォント・色彩の最適化
+```
+
 ## 🏗️ システムアーキテクチャ
 
 ```mermaid
@@ -261,6 +316,7 @@ graph TB
         O3["orchestrator-video-generation-dual-with-analysis.yml<br/>2動画版+分析"]
         O4["orchestrator-video-generation-quad.yml<br/>4動画版"]
         O5["orchestrator-gemini-i2v-generation-analysis.yml<br/>Gemini統合版"]
+        O6["orchestrator-banner-advertisement-creation.yml<br/>バナー広告版"]
     end
     
     subgraph "再利用可能モジュール層"
@@ -271,6 +327,8 @@ graph TB
         M5["module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml<br/>動画生成"]
         M6["module-video-analysis-gca.yml<br/>動画品質分析"]
         M7["module-create-pr.yml<br/>PR作成"]
+        M8["module-banner-planning-ccsdk.yml<br/>バナー企画"]
+        M9["module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml<br/>テキストオーバーレイ"]
     end
     
     subgraph "AIエージェント処理層"
@@ -306,10 +364,18 @@ graph TB
     O3 --> M6
     O3 --> M7
     
+    O6 --> M1
+    O6 --> M8
+    O6 --> M3
+    O6 --> M9
+    O6 --> M7
+    
     M2 --> A1
     M3 --> A1
     M4 --> A1
     M5 --> A1
+    M8 --> A1
+    M9 --> A1
     
     M6 --> A2
     

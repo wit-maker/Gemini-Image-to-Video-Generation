@@ -44,11 +44,14 @@ ls -la .github/workflows/
 # - module-video-analysis-gca.yml
 # - module-create-summary.yml
 # - module-create-pr.yml
+# - module-banner-planning-ccsdk.yml
+# - module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml
 # - orchestrator-video-generation.yml
 # - orchestrator-video-generation-dual.yml
 # - orchestrator-video-generation-dual-with-analysis.yml
 # - orchestrator-video-generation-quad.yml
 # - orchestrator-gemini-i2v-generation-analysis.yml
+# - orchestrator-banner-advertisement-creation.yml
 ```
 
 ### 1.3 MCP設定ファイルの配置
@@ -212,11 +215,14 @@ your-repo/
 │       ├── module-video-analysis-gca.yml
 │       ├── module-create-summary.yml
 │       ├── module-create-pr.yml
+│       ├── module-banner-planning-ccsdk.yml
+│       ├── module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml
 │       ├── orchestrator-video-generation.yml
 │       ├── orchestrator-video-generation-dual.yml
 │       ├── orchestrator-video-generation-dual-with-analysis.yml
 │       ├── orchestrator-video-generation-quad.yml
-│       └── orchestrator-gemini-i2v-generation-analysis.yml
+│       ├── orchestrator-gemini-i2v-generation-analysis.yml
+│       └── orchestrator-banner-advertisement-creation.yml
 ├── .claude/
 │   └── mcp-kamuicode.json
 ├── .gemini/

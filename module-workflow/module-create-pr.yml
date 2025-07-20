@@ -47,19 +47,26 @@ jobs:
           
           # 最終成果物の確認とコミット
           FOLDER_NAME="${{ inputs.folder-name }}"
-          echo "=== Final Video Generation Summary ==="
-          echo "Video folder: $FOLDER_NAME"
+          echo "=== Final Generation Summary ==="
+          echo "Project folder: $FOLDER_NAME"
           
           IMAGES_COUNT=0
           VIDEOS_COUNT=0
+          BANNERS_COUNT=0
           
           if [ -d "$FOLDER_NAME" ]; then
-            echo "✅ Video folder exists: $FOLDER_NAME"
+            echo "✅ Project folder exists: $FOLDER_NAME"
             
             # 画像ファイルの確認（動的ディレクトリ対応）
             IMAGES_COUNT=$(find "$FOLDER_NAME" -name "images-*" -type d -exec find {} -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \; 2>/dev/null | wc -l)
             if [ "$IMAGES_COUNT" -gt 0 ]; then
               echo "✅ Images directories exist with $IMAGES_COUNT files"
+            fi
+            
+            # バナー画像ファイルの確認（動的ディレクトリ対応）
+            BANNERS_COUNT=$(find "$FOLDER_NAME" -name "banners-*" -type d -exec find {} -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \; 2>/dev/null | wc -l)
+            if [ "$BANNERS_COUNT" -gt 0 ]; then
+              echo "✅ Banner directories exist with $BANNERS_COUNT files"
             fi
             
             # 動画ファイルの確認（動的ディレクトリ対応）
@@ -73,13 +80,14 @@ jobs:
           git add "$FOLDER_NAME/" 2>/dev/null || true
           
           # コミットメッセージを作成
-          COMMIT_MESSAGE="Add new AI-generated video: ${{ inputs.concept }}
+          COMMIT_MESSAGE="Add new AI-generated content: ${{ inputs.concept }}
           
           コンセプト: ${{ inputs.concept }}
           生成日時: $(date -u +%Y-%m-%d\ %H:%M:%S)\ UTC
           
           📊 Generation Summary:
           - Images: $IMAGES_COUNT files (Imagen4 Ultra)
+          - Banners: $BANNERS_COUNT files (Flux Kontext Max)
           - Videos: $VIDEOS_COUNT files (Vidu Q1)
           
           🤖 Generated with Claude Code SDK & kamuicode MCP
@@ -110,18 +118,14 @@ jobs:
           fi
           
           # プルリクエスト用のボディを作成
-          PR_BODY="🤖 Claude Code SDK & kamuicode MCPを使用して自動生成された動画です.
+          PR_BODY="🤖 Claude Code SDK & kamuicode MCPを使用して自動生成されたコンテンツです.
 
           コンセプト: ${{ inputs.concept }}
-
-          生成フロー:
-          
-          🎨 Imagen4 Ultra で高品質画像生成
-          🎬 Vidu Q1 で参照動画生成
 
           成果物:
           
           画像: $IMAGES_COUNT ファイル
+          バナー: $BANNERS_COUNT ファイル
           動画: $VIDEOS_COUNT ファイル"
           
           # 全ての画像をプルリクに埋め込み
@@ -142,6 +146,29 @@ jobs:
             done
             if [ -f /tmp/pr_images.txt ]; then
               PR_BODY="$PR_BODY"$'\n'"$(cat /tmp/pr_images.txt)"
+            fi
+          fi
+          
+          # 全てのバナー画像をプルリクに埋め込み
+          if [ "$BANNERS_COUNT" -gt 0 ]; then
+            PR_BODY="$PR_BODY"$'\n\n'"## 📄 生成されたバナー"
+            BANNER_INDEX=1
+            find "$FOLDER_NAME" -name "banners-*" -type d | sort | while read -r BANNER_DIR; do
+              BANNER_FILE=$(find "$BANNER_DIR" -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" 2>/dev/null | head -1)
+              if [ -n "$BANNER_FILE" ] && [ -f "$BANNER_FILE" ]; then
+                GITHUB_BANNER_URL="https://github.com/${{ github.repository }}/raw/$BRANCH_NAME/$BANNER_FILE"
+                if [ "$BANNERS_COUNT" -gt 1 ]; then
+                  echo "### バナー $BANNER_INDEX" >> /tmp/pr_banners.txt
+                fi
+                echo "![Generated Banner $BANNER_INDEX]($GITHUB_BANNER_URL)" >> /tmp/pr_banners.txt
+                echo "" >> /tmp/pr_banners.txt
+                echo "📁 **ファイルパス**: \`$BANNER_FILE\`" >> /tmp/pr_banners.txt
+                echo "" >> /tmp/pr_banners.txt
+                BANNER_INDEX=$((BANNER_INDEX + 1))
+              fi
+            done
+            if [ -f /tmp/pr_banners.txt ]; then
+              PR_BODY="$PR_BODY"$'\n'"$(cat /tmp/pr_banners.txt)"
             fi
           fi
           
@@ -179,7 +206,7 @@ jobs:
           
           # PR作成
           gh pr create \
-            --title "新しいAI生成動画: ${{ inputs.concept }}" \
+            --title "新しいAI生成コンテンツ: ${{ inputs.concept }}" \
             --body "$PR_BODY" \
             --base main \
             --head $BRANCH_NAME
