@@ -19,7 +19,7 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 3. **Run workflow** をクリック
 4. プロンプトを入力して実行
 
-## 🎭 オーケストレータ（5種類）
+## 🎭 オーケストレータ（8種類）
 
 オーケストレータは複数のモジュールを組み合わせて、特定の目的に最適化されたワークフローを実行します。
 
@@ -167,7 +167,63 @@ graph LR
 - Flux Kontext Maxによる高品質テキストオーバーレイ
 - SNS、Web広告、印刷物など多用途対応
 
-## 🧩 モジュール詳細（12種類）
+### 7. `orchestrator-multi-model-video-test.yml` 🆕
+**【マルチモデル対応版】任意のAIモデル選択動画ワークフロー**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>モデル適応型企画 CCSDK]
+    B --> C{動画モデル<br/>タイプ判定}
+    C -->|t2v-*| D1[🎬 Video Generation<br/>テキスト→動画]
+    C -->|i2v-*/r2v-*| E[🎨 Image Generation<br/>任意モデル選択]
+    E --> F[⚙️ Video Prompt Optimization<br/>プロンプト最適化]
+    F --> D2[🎬 Video Generation<br/>画像→動画]
+    D1 --> G[📝 Create PR<br/>プルリクエスト作成]
+    D2 --> G
+    
+    style B fill:#e8f5e8
+    style E fill:#e8f5e8
+    style D1 fill:#e8f5e8
+    style D2 fill:#e8f5e8
+```
+
+**特徴:**
+- **t2v/i2v/r2v全動画タイプ対応**: テキスト→動画、画像→動画、参照動画生成
+- **動的モデル選択**: `kamuicode-usage.md`から自動的にツール特定
+- **モデル最適化**: 指定モデルの特性に合わせたプロンプト生成
+- **条件分岐実行**: t2vは画像生成をスキップして効率化
+- **📄 kamuicode-usage.md**: モデル情報管理ファイル（設置必須）
+- **利用可能モデル**:
+  - 画像: `t2i-google-imagen3`, `t2i-fal-imagen4-ultra`, `t2i-fal-imagen4-fast`, `t2i-fal-flux-schnell`, `t2i-fal-rundiffusion-photo-flux`
+  - 動画: `t2v-fal-veo3-fast`, `i2v-fal-hailuo-02-pro`, `r2v-fal-vidu-q1`
+
+### 8. `orchestrator-multi-model-image-test.yml` 🆕
+**【マルチモデル対応版】任意のAIモデル選択画像ワークフロー**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>モデル適応型企画 CCSDK]
+    B --> C[🎨 Image Generation<br/>任意モデル選択]
+    C --> D[📝 Create PR<br/>プルリクエスト作成]
+    
+    style B fill:#fff8e1
+    style C fill:#fff8e1
+```
+
+**特徴:**
+- **画像生成特化**: 動画生成を行わず画像のみに集中
+- **全モデル対応**: 5種類の画像生成モデルから選択
+- **高速実行**: 画像生成のみのため短時間で完了
+- **モデル比較**: 同じプロンプトで異なるモデルの結果比較に最適
+- **📄 kamuicode-usage.md**: モデル情報管理ファイル（設置必須）
+- **利用可能モデル**:
+  - `t2i-google-imagen3`: 高品質・写実的
+  - `t2i-fal-imagen4-ultra`: 最高品質（商用利用）
+  - `t2i-fal-imagen4-fast`: バランス型・高速
+  - `t2i-fal-flux-schnell`: 超高速生成
+  - `t2i-fal-rundiffusion-photo-flux`: フォトリアリスティック特化
+
+## 🧩 モジュール詳細（15種類）
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
 
@@ -197,14 +253,15 @@ graph LR
 
 ### 🎯 AI企画モジュール
 
-#### `module-planning-ccsdk.yml` 
-**Claude Code SDK版 AI企画**
+#### `module-planning-ccsdk.yml` 🆕
+**Claude Code SDK版 AI企画（モデル適応型）**
 ```yaml
 AI: Claude (Opus/Sonnet)
 機能: コンセプトから複数動画の制作計画を立案
 出力: 各動画用の画像プロンプト（英語）+ ビデオコンセプト
 対応: 最大8動画まで
 特徴: 高度な創作性、詳細な企画書生成
+新機能: image-model-type, video-model-type指定でモデル最適化
 ```
 
 #### `module-planning-gca.yml`
@@ -213,6 +270,7 @@ AI: Claude (Opus/Sonnet)
 AI: Gemini Pro  
 機能: 同様の企画機能をGemini APIで実行
 特徴: 高速処理、コスト効率重視
+オプション: image-model-type, video-model-type指定でモデル最適化
 ```
 
 ### 🎨 画像生成モジュール
@@ -237,6 +295,17 @@ AI: Google Imagen4 Fast
 特徴: バランス型、安定した品質
 ```
 
+#### `module-image-generation-kc-multi-model-ccsdk.yml` 🆕
+**マルチモデル対応画像生成**
+```yaml
+AI: 動的選択（kamuicode-usage.mdから自動特定）
+対応モデル: Imagen3, Imagen4 Ultra/Fast, Flux Schnell, Rundiffusion Photo Flux
+機能: model-type指定でMCPツールを動的選択
+特徴: モデル非依存設計、新モデル自動対応
+依存: kamuicode-usage.md（モデル情報管理ファイル）
+用途: モデル比較、最適モデル選択実験
+```
+
 ### 🎬 動画生成モジュール
 
 #### `module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml`
@@ -257,6 +326,18 @@ AI: Hailuo-02 Pro
 品質: 1080p, 4-6秒
 特徴: 商用品質、細かい動作表現
 用途: 高品質が要求される場面
+```
+
+#### `module-video-generation-kc-multi-model-ccsdk.yml` 🆕
+**マルチモデル対応動画生成**
+```yaml
+AI: 動的選択（kamuicode-usage.mdから自動特定）
+対応タイプ: t2v（テキスト→動画）、i2v（画像→動画）、r2v（参照動画）
+対応モデル: Veo3 Fast, Hailuo-02 Pro, Vidu Q1
+機能: model-type指定でMCPツールとパラメータを動的選択
+特徴: 統合インターフェース、条件分岐処理
+依存: kamuicode-usage.md（モデル情報管理ファイル）
+用途: モデル比較、最適動画生成パイプライン構築
 ```
 
 ### 🔧 最適化・分析モジュール

@@ -30,17 +30,23 @@ mkdir -p .github/workflows
 # 全てのワークフローファイルをコピー
 cp kamuicode-workflow/module-workflow/*.yml .github/workflows/
 
+# 🆕 kamuicode設定ファイルもコピー（マルチモデル機能で必須）
+mkdir -p .github/workflows/kamuicode
+cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workflows/kamuicode/
+
 # ファイルが正しくコピーされたか確認
 ls -la .github/workflows/
 # 以下のファイルが必要です：
 # - module-setup-branch.yml
-# - module-planning-ccsdk.yml
-# - module-planning-gca.yml
+# - module-planning-ccsdk.yml (🆕 モデル最適化対応)
+# - module-planning-gca.yml (🆕 モデル最適化対応)
 # - module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml
 # - module-image-generation-kc-t2i-fal-imagen4-fast-gca.yml
+# - module-image-generation-kc-multi-model-ccsdk.yml (🆕 マルチモデル対応)
 # - module-video-prompt-optimization-ccsdk.yml
 # - module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml
 # - module-video-generation-kc-i2v-fal-hailuo-02-pro-gca.yml
+# - module-video-generation-kc-multi-model-ccsdk.yml (🆕 マルチモデル対応)
 # - module-video-analysis-gca.yml
 # - module-create-summary.yml
 # - module-create-pr.yml
@@ -52,6 +58,8 @@ ls -la .github/workflows/
 # - orchestrator-video-generation-quad.yml
 # - orchestrator-gemini-i2v-generation-analysis.yml
 # - orchestrator-banner-advertisement-creation.yml
+# - orchestrator-multi-model-video-test.yml (🆕 マルチモデル動画テスト版)
+# - orchestrator-multi-model-image-test.yml (🆕 マルチモデル画像テスト版)
 ```
 
 ### 1.3 MCP設定ファイルの配置
@@ -107,6 +115,30 @@ mkdir -p .gemini
 **⚠️ 注意**: 
 - `[kamuicode提供のURL]`部分は実際のkamuicode MCPサーバーURLに置き換えてください
 - kamuicode APIキーの設定方法は、kamuicode提供者の指示に従ってください
+
+### 1.4 🆕 kamuicode-usage.mdファイル
+
+**重要**: マルチモデル対応機能で必要な設定ファイルです。
+
+#### ファイルの配置
+```bash
+# kamuicode使用方法ファイルを配置
+mkdir -p .github/workflows/kamuicode
+cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workflows/kamuicode/
+```
+
+#### ファイルの役割
+- **モデル情報の管理**: 利用可能な全AIモデルの特性と仕様を記載
+- **動的ツール選択**: マルチモデルモジュールがこのファイルからMCPツール名を自動特定
+- **モデル最適化**: 各モデルの特性に合わせたプロンプト生成に使用
+
+#### 必須性
+- `module-image-generation-kc-multi-model-ccsdk.yml`で使用
+- `module-video-generation-kc-multi-model-ccsdk.yml`で使用  
+- `module-planning-ccsdk.yml`のモデル最適化機能で使用
+- `module-planning-gca.yml`のモデル最適化機能で使用
+
+**⚠️ 重要**: このファイルがないとマルチモデル機能が正常に動作しません。
 
 ## 🔐 ステップ2: Secrets設定
 
@@ -205,13 +237,15 @@ your-repo/
 ├── .github/
 │   └── workflows/
 │       ├── module-setup-branch.yml
-│       ├── module-planning-ccsdk.yml
-│       ├── module-planning-gca.yml
+│       ├── module-planning-ccsdk.yml (🆕 モデル最適化対応)
+│       ├── module-planning-gca.yml (🆕 モデル最適化対応)
 │       ├── module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml
 │       ├── module-image-generation-kc-t2i-fal-imagen4-fast-gca.yml
+│       ├── module-image-generation-kc-multi-model-ccsdk.yml (🆕 マルチモデル対応)
 │       ├── module-video-prompt-optimization-ccsdk.yml
 │       ├── module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml
 │       ├── module-video-generation-kc-i2v-fal-hailuo-02-pro-gca.yml
+│       ├── module-video-generation-kc-multi-model-ccsdk.yml (🆕 マルチモデル対応)
 │       ├── module-video-analysis-gca.yml
 │       ├── module-create-summary.yml
 │       ├── module-create-pr.yml
@@ -222,7 +256,13 @@ your-repo/
 │       ├── orchestrator-video-generation-dual-with-analysis.yml
 │       ├── orchestrator-video-generation-quad.yml
 │       ├── orchestrator-gemini-i2v-generation-analysis.yml
-│       └── orchestrator-banner-advertisement-creation.yml
+│       ├── orchestrator-banner-advertisement-creation.yml
+│       ├── orchestrator-multi-model-video-test.yml (🆕 マルチモデル動画テスト版)
+│       └── orchestrator-multi-model-image-test.yml (🆕 マルチモデル画像テスト版)
+├── .github/
+│   └── workflows/
+│       └── kamuicode/
+│           └── kamuicode-usage.md (🆕 マルチモデル機能で必須)
 ├── .claude/
 │   └── mcp-kamuicode.json
 ├── .gemini/
@@ -240,6 +280,44 @@ your-repo/
 **Settings** → **Actions** → **General** → **Workflow permissions**
 - ✅ "Read and write permissions" を選択
 - ✅ "Allow GitHub Actions to create and approve pull requests" をチェック
+
+## 🆕 ステップ5: 新機能の使用方法
+
+### 5.1 マルチモデル対応オーケストレータ
+
+新しく追加されたマルチモデル対応オーケストレータでは、様々なAIモデルを選択してコンテンツ生成を実行できます：
+
+#### 動画生成: `orchestrator-multi-model-video-test.yml`
+
+#### 画像生成モデル選択
+- `t2i-google-imagen3`: 高品質・写実的
+- `t2i-fal-imagen4-ultra`: 最高品質（商用利用）
+- `t2i-fal-imagen4-fast`: バランス型・高速
+- `t2i-fal-flux-schnell`: 超高速生成
+- `t2i-fal-rundiffusion-photo-flux`: フォトリアリスティック特化
+
+#### 動画生成モデル選択
+- `t2v-fal-veo3-fast`: テキスト→動画（画像生成をスキップ）
+- `i2v-fal-hailuo-02-pro`: 画像→動画（高品質）
+- `r2v-fal-vidu-q1`: 参照動画生成
+
+#### 画像生成: `orchestrator-multi-model-image-test.yml`
+
+画像生成に特化したテストワークフローで、動画生成を行わず高速で結果を確認できます：
+
+- **用途**: モデル比較、プロンプトテスト、高速確認
+- **処理時間**: 約3-5分（動画生成なし）
+- **対応モデル**: 全5種類の画像生成モデル
+- **成果物**: 高品質画像とプロンプト最適化結果
+
+### 5.2 モデル最適化機能
+
+計画モジュール（`module-planning-ccsdk.yml`, `module-planning-gca.yml`）にモデル指定機能が追加されました：
+
+- **デフォルト動作**: モデル未指定時は汎用プロンプトを生成
+- **最適化動作**: モデル指定時は`kamuicode-usage.md`から特性を読み取り最適化
+
+この機能により、各AIモデルの特性に合わせた最適なプロンプトが自動生成されます。
 
 ---
 
