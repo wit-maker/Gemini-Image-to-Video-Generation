@@ -500,37 +500,81 @@ AI: Flux Kontext Max
 ```mermaid
 graph TB
     subgraph "オーケストレータ層"
+        ON["🆕 orchestrator-news-video-generation.yml<br/>ニュース動画版"]
         O1["orchestrator-video-generation.yml<br/>1動画版"]
         O2["orchestrator-video-generation-dual.yml<br/>2動画版"]
         O3["orchestrator-video-generation-dual-with-analysis.yml<br/>2動画版+分析"]
         O4["orchestrator-video-generation-quad.yml<br/>4動画版"]
         O5["orchestrator-gemini-i2v-generation-analysis.yml<br/>Gemini統合版"]
         O6["orchestrator-banner-advertisement-creation.yml<br/>バナー広告版"]
+        O7["🆕 orchestrator-multi-model-video-test.yml<br/>マルチモデル動画版"]
+        O8["🆕 orchestrator-multi-model-image-test.yml<br/>マルチモデル画像版"]
     end
     
     subgraph "再利用可能モジュール層"
-        M1["module-setup-branch.yml<br/>ブランチ・フォルダ作成"]
-        M2["module-planning-ccsdk.yml<br/>AI企画"]
-        M3["module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml<br/>画像生成"]
-        M4["module-video-prompt-optimization-ccsdk.yml<br/>プロンプト最適化"]
-        M5["module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml<br/>動画生成"]
-        M6["module-video-analysis-gca.yml<br/>動画品質分析"]
-        M7["module-create-pr.yml<br/>PR作成"]
-        M8["module-banner-planning-ccsdk.yml<br/>バナー企画"]
-        M9["module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml<br/>テキストオーバーレイ"]
+        subgraph "基本モジュール"
+            M1["module-setup-branch.yml<br/>ブランチ・フォルダ作成"]
+            M7["module-create-pr.yml<br/>PR作成"]
+            M15["module-create-summary.yml<br/>サマリー作成"]
+        end
+        
+        subgraph "AI企画モジュール"
+            M2["module-planning-ccsdk.yml<br/>AI企画 (CCSDK)"]
+            M2G["module-planning-gca.yml<br/>AI企画 (GCA)"]
+        end
+        
+        subgraph "画像・動画生成モジュール"
+            M3["module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml<br/>画像生成 (Ultra)"]
+            M3M["🆕 module-image-generation-kc-multi-model-ccsdk.yml<br/>マルチモデル画像生成"]
+            M4["module-video-prompt-optimization-ccsdk.yml<br/>プロンプト最適化"]
+            M5["module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml<br/>動画生成 (Vidu)"]
+            M5M["🆕 module-video-generation-kc-multi-model-ccsdk.yml<br/>マルチモデル動画生成"]
+            M6["module-video-analysis-gca.yml<br/>動画品質分析"]
+        end
+        
+        subgraph "バナー生成モジュール"
+            M8["module-banner-planning-ccsdk.yml<br/>バナー企画"]
+            M9["module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml<br/>テキストオーバーレイ"]
+        end
+        
+        subgraph "🆕 ニュース動画生成モジュール (v0.3.0)"
+            M10["🆕 module-news-planning-ccsdk.yml<br/>ニュース企画立案"]
+            M11["🆕 module-audio-generation-kc-multi-model-ccsdk.yml<br/>マルチモデル音声生成"]
+            M12["🆕 module-lipsync-generation-kc-multi-model-ccsdk.yml<br/>リップシンク生成"]
+            M13["🆕 module-lipsync-video-analysis-gca.yml<br/>リップシンク解析"]
+            M14["🆕 module-subtitle-overlay-ffmpeg-ccsdk.yml<br/>字幕オーバーレイ"]
+            M16["🆕 module-video-title-frame-ffmpeg-ccsdk.yml<br/>タイトルフレーム"]
+        end
     end
     
     subgraph "AIエージェント処理層"
         A1["Claude Code SDK<br/>AI エージェント実行環境"]
-        A2["Gemini CLI Action<br/>Google AI実行環境"]
+        A2["Gemini CLI Action<br/>AI エージェント実行環境"]
+    end
+    
+    subgraph "🆕 技術統合層"
+        F1["🆕 ffmpeg<br/>プロ動画編集"]
+        KC["Kamui Code MCP<br/>全画像・動画・音声・リップシンク生成"]
     end
     
     subgraph "外部AI APIサービス層"
-        T1["kamuicode MCP<br/>Imagen4, Vidu Q1, Hailuo-02"]
         T2["Anthropic API<br/>Claude Opus/Sonnet"]
         T3["Google AI API<br/>Gemini Pro/Vision"]
     end
     
+    %% ニュース動画オーケストレータの接続
+    ON --> M1
+    ON --> M10
+    ON --> M3M
+    ON --> M5M
+    ON --> M11
+    ON --> M12
+    ON --> M13
+    ON --> M14
+    ON --> M16
+    ON --> M7
+    
+    %% 基本オーケストレータの接続
     O1 --> M1
     O1 --> M2
     O1 --> M3
@@ -538,42 +582,54 @@ graph TB
     O1 --> M5
     O1 --> M7
     
-    O2 --> M1
-    O2 --> M2
-    O2 --> M3
-    O2 --> M4
-    O2 --> M5
-    O2 --> M7
-    
-    O3 --> M1
-    O3 --> M2
-    O3 --> M3
-    O3 --> M4
-    O3 --> M5
-    O3 --> M6
-    O3 --> M7
-    
+    %% バナーオーケストレータの接続
     O6 --> M1
     O6 --> M8
     O6 --> M3
     O6 --> M9
     O6 --> M7
     
+    %% マルチモデルオーケストレータの接続
+    O7 --> M1
+    O7 --> M2
+    O7 --> M3M
+    O7 --> M5M
+    O7 --> M7
+    
+    O8 --> M1
+    O8 --> M2
+    O8 --> M3M
+    O8 --> M7
+    
+    %% AIエージェントへの接続
     M2 --> A1
+    M2G --> A2
     M3 --> A1
+    M3M --> A1
     M4 --> A1
     M5 --> A1
+    M5M --> A1
+    M6 --> A2
     M8 --> A1
     M9 --> A1
+    M10 --> A1
+    M11 --> A1
+    M12 --> A1
+    M13 --> A2
+    M14 --> A1
+    M16 --> A1
     
-    M6 --> A2
+    %% 技術層への接続
+    A1 --> KC
+    A2 --> KC
+    M14 --> F1
+    M16 --> F1
     
-    A1 --> T1
+    %% 外部APIへの接続
     A1 --> T2
     A2 --> T3
-    
-    T1 --> T2
-    T1 --> T3
+    KC --> T2
+    KC --> T3
 ```
 
 ## 📄 ライセンス
