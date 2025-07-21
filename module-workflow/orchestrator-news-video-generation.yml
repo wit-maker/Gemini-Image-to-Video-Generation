@@ -28,21 +28,20 @@ on:
         required: true
         type: choice
         options:
+          - t2i-google-imagen3
+          - t2i-fal-imagen4-ultra
           - t2i-fal-imagen4-fast
-          - t2i-fal-imagen4-turbo
-          - t2i-fal-imagen4-standard
           - t2i-fal-flux-schnell
-          - t2i-fal-stabilityai-v3
+          - t2i-fal-rundiffusion-photo-flux
         default: t2i-fal-imagen4-fast
       video-model:
         description: '動画生成モデル'
         required: true
         type: choice
         options:
+          - t2v-fal-veo3-fast
           - i2v-fal-hailuo-02-pro
-          - i2v-fal-hailuo-01
-          - i2v-fal-minimax-01
-          - i2v-fal-stabilityai-v2
+          - r2v-fal-vidu-q1
         default: i2v-fal-hailuo-02-pro
       audio-model:
         description: '音声生成モデル'
