@@ -1,3 +1,166 @@
+# 📰 Professional News Video Generation System Release
+
+**Version:** v0.3.0-news-video  
+**Release Date:** 2025-07-21
+
+## 🌟 新機能
+
+### 🎯 完全統合ニュース動画生成システム
+プロフェッショナルなニュース番組を完全自動化で生成する包括的なシステムを追加しました。概念から完成品まで約20-30分で高品質なニュース動画を生成できます。
+
+#### 新しいオーケストレータ
+- **`orchestrator-news-video-generation.yml`** - ニュース動画生成のメインオーケストレータ
+  - 企画→画像→動画→音声→リップシンク→字幕→タイトルフレームの完全自動化パイプライン
+  - 12の統合モジュールによる高度な処理フロー
+  - 多言語対応（翻訳機能付き）
+  - マルチモデル対応（画像・動画・音声・リップシンクモデルを自由選択）
+
+#### 新しい専門モジュール（7つ追加、計2,005行）
+
+- **`module-news-planning-ccsdk.yml`** - AI ニュース企画立案モジュール（405行）
+  - Claude AIによる詳細なニュース制作企画
+  - 原稿翻訳・アンカー設定・音声設定の自動化
+  - タイトル生成（英語、30文字程度）・要約作成
+  - 性別統一設定（女性アンカー）
+
+- **`module-audio-generation-kc-multi-model-ccsdk.yml`** - マルチモデル音声生成モジュール（225行）
+  - 複数の音声生成エンジン対応
+  - `kamuicode-usage.md`からの動的ツール選択
+  - 音声設定のJSON形式カスタマイズ
+  - **依存ファイル**: `kamuicode-usage.md`（モデル情報管理）
+
+- **`module-lipsync-generation-kc-multi-model-ccsdk.yml`** - リップシンク生成モジュール（233行）
+  - 動画と音声の高精度同期
+  - マルチモデル対応リップシンク処理
+  - リップシンク設定のJSON形式カスタマイズ
+  - **依存ファイル**: `kamuicode-usage.md`（モデル情報管理）
+
+- **`module-lipsync-video-analysis-gca.yml`** - リップシンク解析モジュール（223行）
+  - Gemini Visionによるリップシンク動画解析
+  - 音声と口の動きから字幕タイミング決定
+  - 字幕タイミング設定JSON自動生成
+  - 高精度な字幕同期実現
+
+- **`module-subtitle-overlay-ffmpeg-ccsdk.yml`** - 字幕オーバーレイモジュール（275行）
+  - ffmpegとClaude Code SDKの統合
+  - 日本語・英語字幕対応
+  - タイミング設定に基づく正確な字幕表示
+  - エラーハンドリング・ログ機能付き
+
+- **`module-video-title-frame-ffmpeg-ccsdk.yml`** - タイトルフレーム挿入モジュール（310行）
+  - ffmpegによる動画先頭へのタイトルフレーム追加
+  - 元動画の解像度・フレームレート維持
+  - タイトル表示時間のカスタマイズ
+  - 音声・映像の完全統合処理
+
+### 🔧 技術スタック拡張
+
+#### ffmpeg統合
+- 動画処理・字幕オーバーレイ・タイトルフレーム挿入
+- プロフェッショナルレベルの動画編集機能
+- 解像度・フレームレート・音質の完全保持
+
+#### Gemini Vision統合
+- リップシンク動画の高精度解析
+- 音声と口の動きの同期分析
+- 字幕タイミングの自動最適化
+
+#### マルチモデル音声・リップシンク
+- 複数の音声生成エンジン対応
+- 動的モデル選択システム
+- カスタム音声設定のJSON対応
+
+## 📚 ドキュメント更新
+
+### 更新されたファイル
+- **dynamic-video-generation-architecture.md** - システム構成図の大幅更新
+  - 新しい7つのモジュール追加
+  - GCA（Gemini CLI Action）処理層の完全統合
+  - MCP層のKamui Code統一表記
+  - 9つのオーケストレータ対応
+
+- **kamuicode-usage.md** - モデル情報データベース更新
+  - 音声・リップシンク関連モデル追加
+  - 新しいMCPツール情報統合
+
+## 🚀 使用方法
+
+### ニュース動画生成の基本手順
+1. GitHub Actionsの **orchestrator-news-video-generation** を選択
+2. 以下のパラメータを入力：
+   - **concept**: "最新技術ニュース"
+   - **news-content**: "AIの最新動向について..."
+   - **target-language**: "japanese"
+   - **image-model**: "t2i-fal-imagen4-ultra"
+   - **video-model**: "i2v-fal-hailuo-02-pro"
+   - **audio-model**: "t2s-elevenlabs-v2"
+   - **lipsync-model**: "lipsync-wav2lip"
+3. **Run workflow** をクリック
+4. 約20-30分でプロフェッショナルなニュース動画が生成
+
+### 生成される成果物
+- 高品質アンカー画像（Imagen4 Ultra品質）
+- リップシンク同期動画
+- 多言語対応音声（プロ品質）
+- 正確なタイミングの字幕
+- カスタムタイトルフレーム
+- プロフェッショナルな最終動画
+- 詳細な制作ドキュメント
+- GitHub PRでの美しい表示
+
+## 🎯 技術的改善
+
+### GitHub Token統一
+- 全モジュールで `github_pat` 使用に統一
+- セキュリティ・権限管理の一元化
+- 既存モジュールの更新（5ファイル）
+
+### ファイル構造統一
+- image-url.txtの保存場所をGCAアプローチに統一
+- 一貫したディレクトリ構造の実現
+- 全モジュール間でのファイル管理統一
+
+### システム規模の拡張
+- **新規追加**: 2,005行のコード追加
+- **合計モジュール数**: 22モジュール（+7）
+- **合計オーケストレータ**: 9種類（+1）
+- **技術統合**: ffmpeg + Gemini Vision + マルチモデルAI
+
+## 🔄 互換性
+
+### 既存システムへの影響
+- **完全後方互換性**: 既存のワークフローには影響なし
+- **モジュール式設計**: 新機能は独立して動作
+- **技術スタック拡張**: ffmpeg統合による新たな可能性
+
+### 必要な設定
+- **Anthropic API Key**: Claude Code SDK利用
+- **Gemini API Key**: Gemini Vision解析
+- **GitHub PAT Token**: PR作成・リポジトリ操作
+- **kamuicode MCP**: 全AI生成サービス統合
+- **ffmpeg**: 動画編集・字幕・タイトルフレーム処理
+
+---
+
+## 📋 ファイル変更履歴
+
+### 新規追加 (7ファイル)
+- `orchestrator-news-video-generation.yml` (276行)
+- `module-news-planning-ccsdk.yml` (405行)
+- `module-audio-generation-kc-multi-model-ccsdk.yml` (225行)
+- `module-lipsync-generation-kc-multi-model-ccsdk.yml` (233行)
+- `module-lipsync-video-analysis-gca.yml` (223行)
+- `module-subtitle-overlay-ffmpeg-ccsdk.yml` (275行)
+- `module-video-title-frame-ffmpeg-ccsdk.yml` (310行)
+
+### 技術改善 (8ファイル)
+- GitHub token統一 (5ファイル)
+- ファイル構造統一 (3ファイル)
+- アーキテクチャ図更新 (1ファイル)
+- kamuicode設定更新 (1ファイル)
+
+---
+
 # 🎬 Multi-Model AI Generation System Release
 
 **Version:** v0.2.0-multi-model  

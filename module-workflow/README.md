@@ -19,9 +19,43 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 3. **Run workflow** をクリック
 4. プロンプトを入力して実行
 
-## 🎭 オーケストレータ（8種類）
+## 🎭 オーケストレータ（9種類）
 
 オーケストレータは複数のモジュールを組み合わせて、特定の目的に最適化されたワークフローを実行します。
+
+### 🆕 0. `orchestrator-news-video-generation.yml` **（v0.3.0新機能）**
+**【プロフェッショナルニュース番組生成】完全統合ワークフロー**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[📰 News Planning<br/>ニュース企画 CCSDK]
+    B --> C[🎨 Anchor Image<br/>アンカー画像生成]
+    C --> D[🎬 Base Video<br/>ベース動画生成]
+    B --> E[🎵 Audio Generation<br/>音声生成]
+    D --> F[👄 Lipsync<br/>リップシンク生成]
+    E --> F
+    F --> G[🔍 Subtitle Analysis<br/>字幕タイミング解析 GCA]
+    G --> H[📝 Subtitle Overlay<br/>字幕追加 ffmpeg]
+    B --> I[🎬 Title Background<br/>タイトル背景生成]
+    I --> J[🎨 Title Composition<br/>タイトルテキスト合成]
+    J --> K[🎞️ Title Frame<br/>タイトルフレーム追加 ffmpeg]
+    H --> K
+    K --> L[📝 Create PR<br/>プルリクエスト作成]
+```
+
+**特徴:**
+- **完全自動ニュース番組制作**: 概念から完成品まで20-30分
+- **多言語対応**: 自動翻訳機能付き
+- **プロレベル品質**: ffmpeg統合による高品質動画編集
+- **リップシンク同期**: Gemini Vision解析による高精度字幕タイミング
+- **カスタマイズ可能**: 画像・動画・音声モデルを自由選択
+
+**生成物:**
+- 📺 AIアナウンサー動画（リップシンク同期）
+- 🎵 プロ品質ナレーション
+- 📝 多言語字幕（完全同期）
+- 🎬 カスタムタイトルフレーム
+- 📰 統合ニュース動画（完成品）
 
 ### 1. `orchestrator-video-generation.yml`
 **【基本1動画版】線形ワークフロー**
@@ -223,9 +257,83 @@ graph LR
   - `t2i-fal-flux-schnell`: 超高速生成
   - `t2i-fal-rundiffusion-photo-flux`: フォトリアリスティック特化
 
-## 🧩 モジュール詳細（15種類）
+## 🧩 モジュール詳細（22種類）🆕
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
+
+### 🆕 ニュース動画生成専門モジュール（v0.3.0新機能）
+
+#### `module-news-planning-ccsdk.yml` 🆕
+**ニュース企画立案**
+```yaml
+AI: Claude Code SDK
+機能: プロフェッショナルニュース番組の制作企画
+特徴: 
+  - 原稿翻訳・アンカー設定・音声設定の自動化
+  - タイトル生成（英語、30文字程度）・要約作成
+  - 性別統一設定（女性アナウンサー）
+出力: 音声プロンプト、画像プロンプト、動画コンセプト、タイトル情報
+```
+
+#### `module-audio-generation-kc-multi-model-ccsdk.yml` 🆕  
+**マルチモデル音声生成**
+```yaml
+技術: kamuicode MCP + Claude Code SDK
+機能: 複数の音声生成エンジン対応
+特徴:
+  - 動的モデル選択システム
+  - JSON形式音声設定カスタマイズ
+  - プロ品質ナレーション生成
+依存: kamuicode-usage.md（モデル情報管理）
+```
+
+#### `module-lipsync-generation-kc-multi-model-ccsdk.yml` 🆕
+**リップシンク生成**  
+```yaml
+技術: kamuicode MCP + Claude Code SDK
+機能: 動画と音声の高精度同期
+特徴:
+  - マルチモデルリップシンク処理
+  - JSON設定によるカスタマイズ
+  - 自然な口の動きを生成
+依存: kamuicode-usage.md（モデル情報管理）
+```
+
+#### `module-lipsync-video-analysis-gca.yml` 🆕
+**リップシンク解析**
+```yaml
+AI: Gemini Vision (GCA)
+機能: リップシンク動画の高精度解析
+特徴:
+  - 音声と口の動きから字幕タイミング決定
+  - 字幕タイミング設定JSON自動生成
+  - Gemini Visionによる高精度解析
+出力: subtitle-timing.json, 動画解析レポート
+```
+
+#### `module-subtitle-overlay-ffmpeg-ccsdk.yml` 🆕  
+**字幕オーバーレイ**
+```yaml
+技術: ffmpeg + Claude Code SDK
+機能: 動画への字幕追加
+特徴:
+  - 日本語・英語字幕対応
+  - タイミング設定に基づく正確な字幕表示
+  - エラーハンドリング・ログ機能
+処理: ffmpegによるプロレベル字幕処理
+```
+
+#### `module-video-title-frame-ffmpeg-ccsdk.yml` 🆕
+**タイトルフレーム挿入**  
+```yaml
+技術: ffmpeg + Claude Code SDK
+機能: 動画先頭へのタイトルフレーム追加
+特徴:
+  - 元動画の解像度・フレームレート維持
+  - タイトル表示時間のカスタマイズ
+  - 音声・映像の完全統合処理
+処理: ffmpegによる高品質動画編集
+```
 
 ### 📋 セットアップ・管理モジュール
 

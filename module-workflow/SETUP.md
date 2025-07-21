@@ -37,9 +37,15 @@ cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workf
 # ファイルが正しくコピーされたか確認
 ls -la .github/workflows/
 # 以下のファイルが必要です：
+
+## 🆕 基本モジュール
 # - module-setup-branch.yml
 # - module-planning-ccsdk.yml (🆕 モデル最適化対応)
 # - module-planning-gca.yml (🆕 モデル最適化対応)
+# - module-create-summary.yml
+# - module-create-pr.yml
+
+## 🆕 画像・動画生成モジュール
 # - module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml
 # - module-image-generation-kc-t2i-fal-imagen4-fast-gca.yml
 # - module-image-generation-kc-multi-model-ccsdk.yml (🆕 マルチモデル対応)
@@ -48,10 +54,20 @@ ls -la .github/workflows/
 # - module-video-generation-kc-i2v-fal-hailuo-02-pro-gca.yml
 # - module-video-generation-kc-multi-model-ccsdk.yml (🆕 マルチモデル対応)
 # - module-video-analysis-gca.yml
-# - module-create-summary.yml
-# - module-create-pr.yml
+
+## 🆕 バナー生成モジュール
 # - module-banner-planning-ccsdk.yml
 # - module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml
+
+## 🆕 ニュース動画生成モジュール（v0.3.0新機能）
+# - module-news-planning-ccsdk.yml (📰 ニュース企画立案)
+# - module-audio-generation-kc-multi-model-ccsdk.yml (🎵 音声生成)
+# - module-lipsync-generation-kc-multi-model-ccsdk.yml (👄 リップシンク生成)
+# - module-lipsync-video-analysis-gca.yml (🔍 リップシンク解析)
+# - module-subtitle-overlay-ffmpeg-ccsdk.yml (📝 字幕オーバーレイ)
+# - module-video-title-frame-ffmpeg-ccsdk.yml (🎬 タイトルフレーム)
+
+## 🆕 オーケストレータ
 # - orchestrator-video-generation.yml
 # - orchestrator-video-generation-dual.yml
 # - orchestrator-video-generation-dual-with-analysis.yml
@@ -60,6 +76,7 @@ ls -la .github/workflows/
 # - orchestrator-banner-advertisement-creation.yml
 # - orchestrator-multi-model-video-test.yml (🆕 マルチモデル動画テスト版)
 # - orchestrator-multi-model-image-test.yml (🆕 マルチモデル画像テスト版)
+# - orchestrator-news-video-generation.yml (🆕 ニュース動画生成版)
 ```
 
 ### 1.3 MCP設定ファイルの配置
@@ -146,11 +163,15 @@ cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workf
 
 以下のキーの設定が必要です：
 
-| Secret名 | 説明 | 取得方法 |
-|---------|------|----------|
-| `ANTHROPIC_API_KEY` | Claude API Key (必須) | [Anthropic Console](https://console.anthropic.com/)でAPI Keyを作成 |
-| `PAT_TOKEN` | GitHub Personal Access Token (必須) | Settings → Developer settings → Personal access tokens |
-| `GEMINI_API_KEY` | Gemini API Key (オプション) | [Google AI Studio](https://aistudio.google.com/)でAPI Keyを作成 |
+| Secret名 | 説明 | 必要性 | 取得方法 |
+|---------|------|--------|----------|
+| `ANTHROPIC_API_KEY` | Claude API Key | **必須** | [Anthropic Console](https://console.anthropic.com/)でAPI Keyを作成 |
+| `PAT_TOKEN` | GitHub Personal Access Token | **必須** | Settings → Developer settings → Personal access tokens |
+| `GEMINI_API_KEY` | Gemini API Key | **必須** | [Google AI Studio](https://aistudio.google.com/)でAPI Keyを作成 |
+
+**🆕 v0.3.0での必要性の変更:**
+- `GEMINI_API_KEY`が**必須**に変更：従来のGCAモジュール＋ニュース動画生成システムでリップシンク解析に使用
+- GCA機能（動画分析等）とニュース動画機能の両方で必要
 
 ### 2.2 ANTHROPIC_API_KEYの取得方法
 
@@ -283,9 +304,39 @@ your-repo/
 
 ## 🆕 ステップ5: 新機能の使用方法
 
-### 5.1 マルチモデル対応オーケストレータ
+### 5.1 🆕 ニュース動画生成システム（v0.3.0）
 
-新しく追加されたマルチモデル対応オーケストレータでは、様々なAIモデルを選択してコンテンツ生成を実行できます：
+#### プロフェッショナルニュース番組の完全自動生成
+
+**`orchestrator-news-video-generation.yml`** を使用すると、概念から完成品まで約20-30分でプロフェッショナルなニュース動画を生成できます。
+
+#### 📰 使用手順
+1. GitHub Actionsの **orchestrator-news-video-generation** を選択
+2. パラメータ入力：
+   ```
+   concept: "最新技術ニュース"
+   news-content: "AIの最新動向について..."
+   target-language: "japanese"
+   image-model: "t2i-fal-imagen4-fast" (選択式)
+   video-model: "i2v-fal-hailuo-02-pro" (選択式)
+   audio-model: "t2s-fal-minimax-speech-02-turbo"
+   ```
+
+#### 🎯 生成される成果物
+- 📺 高品質アンカー画像（AIアナウンサー）
+- 🎵 プロ品質ナレーション音声
+- 👄 リップシンク同期動画
+- 📝 多言語字幕（タイミング最適化）
+- 🎬 カスタムタイトルフレーム
+- 📰 最終ニュース動画（完全統合）
+
+#### 🔧 技術的特徴
+- **ffmpeg統合**: プロレベルの動画編集
+- **Gemini Vision**: 高精度リップシンク解析
+- **マルチモデル対応**: 全工程でモデル選択可能
+- **多言語対応**: 翻訳機能付き
+
+### 5.2 マルチモデル対応オーケストレータ
 
 #### 動画生成: `orchestrator-multi-model-video-test.yml`
 
@@ -310,7 +361,7 @@ your-repo/
 - **対応モデル**: 全5種類の画像生成モデル
 - **成果物**: 高品質画像とプロンプト最適化結果
 
-### 5.2 モデル最適化機能
+### 5.3 モデル最適化機能
 
 計画モジュール（`module-planning-ccsdk.yml`, `module-planning-gca.yml`）にモデル指定機能が追加されました：
 
