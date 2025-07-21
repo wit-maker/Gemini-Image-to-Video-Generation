@@ -111,7 +111,7 @@ jobs:
           2. \`mcp__t2i-fal-imagen4-ultra__imagen4_ultra_submit\`ツールで画像生成を開始
           3. \`mcp__t2i-fal-imagen4-ultra__imagen4_ultra_status\`でステータス確認
           4. \`mcp__t2i-fal-imagen4-ultra__imagen4_ultra_result\`で結果取得してGoogle URLを取得
-          5. **重要**: 生成時に取得したGoogle URLを「$FOLDER_NAME/image-url.txt」ファイルに保存
+          5. **重要**: 生成時に取得したGoogle URLを「$IMAGES_DIR/image-url.txt」ファイルに保存
           6. 取得したGoogle URLをBashツールで「$IMAGES_DIR/image.png」にダウンロード保存
 
           **重要な注意点**:
@@ -119,7 +119,7 @@ jobs:
           - 必ずGoogle提供の認証済URLを使用
           - 画像は必ず「$IMAGES_DIR」ディレクトリに保存
           - ファイル名は「image.png」とする
-          - **最重要**: 生成時のGoogle URLを「$FOLDER_NAME/image-url.txt」に保存し、次のジョブで参照できるようにする
+          - **最重要**: 生成時のGoogle URLを「$IMAGES_DIR/image-url.txt」に保存し、次のジョブで参照できるようにする
           - **両方を実行**: ①Google URLをテキストファイルに保存 ②Google URLから画像をダウンロードしてローカル保存"
           
           echo "🚀 Starting Image Generation Agent Claude Code CLI..."
@@ -145,8 +145,8 @@ jobs:
             echo "::notice::📸 Generated $IMAGE_COUNT images"
             if [ "$IMAGE_COUNT" -gt 0 ]; then
               # Google URLを確認してGitHub Outputに設定
-              if [ -f "$FOLDER_NAME/image-url.txt" ]; then
-                GOOGLE_URL=$(cat "$FOLDER_NAME/image-url.txt")
+              if [ -f "$IMAGES_DIR/image-url.txt" ]; then
+                GOOGLE_URL=$(cat "$IMAGES_DIR/image-url.txt")
                 echo "Google image URL: $GOOGLE_URL"
                 echo "image-url=$GOOGLE_URL" >> $GITHUB_OUTPUT
               else
@@ -167,7 +167,7 @@ jobs:
       
       - name: Commit and push images
         env:
-          GH_TOKEN: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ secrets.github_pat }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

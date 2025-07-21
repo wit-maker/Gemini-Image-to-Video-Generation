@@ -78,9 +78,9 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 - `mcp__v2v-fal-bria-background-removal__submit` - 動画背景削除開始
 - `mcp__v2v-fal-bria-background-removal__status` - 背景削除ステータス確認
 - `mcp__v2v-fal-bria-background-removal__result` - 背景削除結果取得
-- `mcp__v2v-fal-creatify-lipsync__submit` - リップシンク動画生成開始
-- `mcp__v2v-fal-creatify-lipsync__status` - リップシンク生成ステータス確認
-- `mcp__v2v-fal-creatify-lipsync__result` - リップシンク生成結果取得
+- `mcp__v2v-fal-creatify-lipsync__lipsync_submit` - リップシンク動画生成開始
+- `mcp__v2v-fal-creatify-lipsync__lipsync_status` - リップシンク生成ステータス確認
+- `mcp__v2v-fal-creatify-lipsync__lipsync_result` - リップシンク生成結果取得
 
 ### 音楽生成
 - `mcp__t2m-google-lyria__lyria_generate` - Google Lyria音楽生成（一括実行）
