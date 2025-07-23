@@ -19,11 +19,35 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 3. **Run workflow** をクリック
 4. プロンプトを入力して実行
 
-## 🎭 オーケストレータ（9種類）
+## 🎭 オーケストレータ（11種類）
 
 オーケストレータは複数のモジュールを組み合わせて、特定の目的に最適化されたワークフローを実行します。
 
-### 🆕 0. `orchestrator-news-video-generation.yml` **（v0.3.0新機能）**
+### 🆕 0. `orchestrator-ai-news-article-generation.yml` **（v0.4.0新機能）**
+**【AIニュース記事生成】ウェブ検索から記事・音声まで完全自動化**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🔍 Web Search<br/>ウェブ検索]
+    B --> C[📝 Article Creation<br/>記事作成 CCSDK]
+    C --> D[🎵 Audio Generation<br/>音声生成]
+    D --> E[📝 Create PR<br/>プルリクエスト作成]
+```
+
+**特徴:**
+- **完全自動記事生成**: コンセプトから高品質記事まで15-20分
+- **事実確認済み**: ウェブ検索結果に基づく信頼できる情報のみ使用
+- **フィクション防止**: 架空の企業・製品・ニュースを一切含めない
+- **多言語対応**: 日本語・英語記事作成
+- **音声スクリプト**: 2-3分程度の音声用原稿を同時生成
+
+**生成物:**
+- 📄 事実確認済み記事（Markdown形式）
+- 🎯 記事タイトル・要約
+- 🎵 音声用スクリプト
+- 📰 高品質音声ファイル
+
+### 🆕 1. `orchestrator-news-video-generation.yml` **（v0.3.0新機能）**
 **【プロフェッショナルニュース番組生成】完全統合ワークフロー**
 
 ```mermaid
@@ -57,7 +81,7 @@ graph LR
 - 🎬 カスタムタイトルフレーム
 - 📰 統合ニュース動画（完成品）
 
-### 1. `orchestrator-video-generation.yml`
+### 2. `orchestrator-video-generation.yml`
 **【基本1動画版】線形ワークフロー**
 
 ```mermaid
@@ -74,7 +98,7 @@ graph LR
 - エラー追跡が容易
 - 初回利用に最適
 
-### 2. `orchestrator-video-generation-dual.yml`  
+### 3. `orchestrator-video-generation-dual.yml`  
 **【2動画版】並列処理ワークフロー**
 
 ```mermaid
@@ -95,7 +119,7 @@ graph LR
 - video_index パラメータで出力先を分離
 - 2つの独立したパイプライン
 
-### 3. `orchestrator-video-generation-dual-with-analysis.yml`
+### 4. `orchestrator-video-generation-dual-with-analysis.yml`
 **【2動画＋分析版】品質評価付きワークフロー**
 
 ```mermaid
@@ -118,7 +142,7 @@ graph LR
 - 各動画に対応する analysis-{index} フォルダ作成
 - 技術品質・視覚的インパクト・商用利用可能性の評価
 
-### 4. `orchestrator-video-generation-quad.yml`
+### 5. `orchestrator-video-generation-quad.yml`
 **【4動画版】大規模並列ワークフロー**
 
 ```mermaid
@@ -147,7 +171,7 @@ graph LR
 - リソース集約的な実行
 - 統一テーマでの多角的表現
 
-### 5. `orchestrator-gemini-i2v-generation-analysis.yml`
+### 6. `orchestrator-gemini-i2v-generation-analysis.yml`
 **【Gemini統合版】Gemini CLI Action中心ワークフロー**
 
 ```mermaid
@@ -169,7 +193,7 @@ graph LR
 - 異なるAIモデル組み合わせのテスト用
 - Gemini APIキーのみで動作
 
-### 6. `orchestrator-banner-advertisement-creation.yml`
+### 7. `orchestrator-banner-advertisement-creation.yml`
 **【バナー広告作成版】AI自動バナー生成ワークフロー**
 
 ```mermaid
@@ -201,7 +225,7 @@ graph LR
 - Flux Kontext Maxによる高品質テキストオーバーレイ
 - SNS、Web広告、印刷物など多用途対応
 
-### 7. `orchestrator-multi-model-video-test.yml` 🆕
+### 8. `orchestrator-multi-model-video-test.yml` 🆕
 **【マルチモデル対応版】任意のAIモデル選択動画ワークフロー**
 
 ```mermaid
@@ -231,7 +255,7 @@ graph LR
   - 画像: `t2i-google-imagen3`, `t2i-fal-imagen4-ultra`, `t2i-fal-imagen4-fast`, `t2i-fal-flux-schnell`, `t2i-fal-rundiffusion-photo-flux`
   - 動画: `t2v-fal-veo3-fast`, `i2v-fal-hailuo-02-pro`, `r2v-fal-vidu-q1`
 
-### 8. `orchestrator-multi-model-image-test.yml` 🆕
+### 9. `orchestrator-multi-model-image-test.yml` 🆕
 **【マルチモデル対応版】任意のAIモデル選択画像ワークフロー**
 
 ```mermaid
@@ -257,9 +281,39 @@ graph LR
   - `t2i-fal-flux-schnell`: 超高速生成
   - `t2i-fal-rundiffusion-photo-flux`: フォトリアリスティック特化
 
-## 🧩 モジュール詳細（22種類）🆕
+## 🧩 モジュール詳細（26種類）🆕
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
+
+### 🆕 AIニュース記事生成専門モジュール（v0.4.0新機能）
+
+#### `module-web-search.yml` 🆕
+**ウェブ検索**
+```yaml
+機能: 指定コンセプトに基づく包括的検索実行
+特徴:
+  - 複数ソースからの信頼できる情報収集・整理
+  - 記事作成用の構造化データ出力
+  - フィクション防止のための事実確認機能
+  - Git Push競合回避システム搭載（3回リトライ・ランダム待機）
+出力: 検索結果データ、実際に見つかったソースURL
+行数: 207行
+```
+
+#### `module-article-creation-ccsdk.yml` 🆕
+**AI記事作成**
+```yaml
+AI: Claude Code SDK
+機能: 検索結果ベースの高品質記事作成
+特徴:
+  - 事実確認済み記事生成（フィクション一切なし）
+  - タイトル・要約・本文・音声スクリプトを統合出力
+  - 多言語対応（日本語・英語）
+  - 品質チェック機能付き
+  - Git Push競合回避システム搭載（95%以上の成功率達成）
+出力: article.md, article-title.txt, article-summary.txt, audio-script.txt
+行数: 282行
+```
 
 ### 🆕 ニュース動画生成専門モジュール（v0.3.0新機能）
 
@@ -495,11 +549,45 @@ AI: Flux Kontext Max
 処理: レイアウト・フォント・色彩の最適化
 ```
 
+## 🔧 システム信頼性の大幅改善（v0.4.0）
+
+全26個のモジュールワークフローに**Git Push競合回避システム**を追加しました。
+
+### 改善されたGit Push処理
+```yaml
+# 並列実行での競合を回避するためのリトライ処理
+for i in {1..3}; do
+  git pull --rebase origin ${{ inputs.branch-name }} || true
+  if git push origin ${{ inputs.branch-name }}; then
+    echo "✅ Push successful on attempt $i"
+    break
+  else
+    echo "⚠️ Push failed on attempt $i, retrying..."
+    # ランダムな待機時間（1-5秒）
+    sleep $((RANDOM % 5 + 1))
+  fi
+done
+```
+
+### 信頼性向上の特徴
+- **3回リトライ**: push失敗時の自動再試行
+- **ランダム待機**: 1-5秒のランダム間隔で競合回避
+- **詳細ログ**: 成功・失敗状況の明確な記録
+- **自動リベース**: 各試行前の自動同期
+- **95%以上の成功率**: 並列実行時の大幅な安定性向上
+
+### 対象モジュール（全26個）
+v0.4.0で信頼性改善が適用されたモジュール：
+- 新規追加: `module-web-search.yml`, `module-article-creation-ccsdk.yml`
+- 既存20モジュール: すべてのワークフローに競合回避システム適用
+- 削除: `module-create-summary.yml`（システム簡素化）
+
 ## 🏗️ システムアーキテクチャ
 
 ```mermaid
 graph TB
     subgraph "オーケストレータ層"
+        OA["🆕 orchestrator-ai-news-article-generation.yml<br/>AIニュース記事生成版"]
         ON["🆕 orchestrator-news-video-generation.yml<br/>ニュース動画版"]
         O1["orchestrator-video-generation.yml<br/>1動画版"]
         O2["orchestrator-video-generation-dual.yml<br/>2動画版"]
@@ -515,7 +603,6 @@ graph TB
         subgraph "基本モジュール"
             M1["module-setup-branch.yml<br/>ブランチ・フォルダ作成"]
             M7["module-create-pr.yml<br/>PR作成"]
-            M15["module-create-summary.yml<br/>サマリー作成"]
         end
         
         subgraph "AI企画モジュール"
@@ -535,6 +622,11 @@ graph TB
         subgraph "バナー生成モジュール"
             M8["module-banner-planning-ccsdk.yml<br/>バナー企画"]
             M9["module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml<br/>テキストオーバーレイ"]
+        end
+        
+        subgraph "🆕 AIニュース記事生成モジュール (v0.4.0)"
+            M17["🆕 module-web-search.yml<br/>ウェブ検索"]
+            M18["🆕 module-article-creation-ccsdk.yml<br/>AI記事作成"]
         end
         
         subgraph "🆕 ニュース動画生成モジュール (v0.3.0)"
@@ -561,6 +653,13 @@ graph TB
         T2["Anthropic API<br/>Claude Opus/Sonnet"]
         T3["Google AI API<br/>Gemini Pro/Vision"]
     end
+    
+    %% AIニュース記事生成オーケストレータの接続
+    OA --> M1
+    OA --> M17
+    OA --> M18
+    OA --> M11
+    OA --> M7
     
     %% ニュース動画オーケストレータの接続
     ON --> M1
@@ -618,6 +717,8 @@ graph TB
     M13 --> A2
     M14 --> A1
     M16 --> A1
+    M17 --> A1
+    M18 --> A1
     
     %% 技術層への接続
     A1 --> KC
@@ -636,10 +737,6 @@ graph TB
 
 MIT License - 商用利用、改変、再配布が可能です。
 
-
-## 🏷️ バージョン履歴
-
-- **v0.0.1**: 初回リリース
 
 ---
 

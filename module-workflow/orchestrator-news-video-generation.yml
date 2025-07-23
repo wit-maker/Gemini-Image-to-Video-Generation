@@ -261,15 +261,3 @@ jobs:
       folder-name: ${{ needs.create-branch.outputs.folder-name }}
     secrets:
       github_pat: ${{ secrets.PAT_TOKEN }}
-
-  # ステップ10: サマリー作成
-  create-summary:
-    needs: [create-branch, audio-generation, lipsync-generation, subtitle-overlay, video-with-title, create-pr]
-    if: always() && needs.create-pr.result == 'success'
-    uses: ./.github/workflows/module-create-summary.yml
-    with:
-      concept: ${{ inputs.concept }}
-      branch-name: ${{ needs.create-branch.outputs.branch-name }}
-      folder-name: ${{ needs.create-branch.outputs.folder-name }}
-    secrets:
-      github_pat: ${{ secrets.PAT_TOKEN }}

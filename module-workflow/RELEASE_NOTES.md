@@ -1,3 +1,144 @@
+# 🔧 GitHub Actions Workflow Reliability Enhancement
+
+**Version:** v0.4.0-reliability  
+**Release Date:** 2025-07-23  
+**Commit:** 18a6780c07a36905b46069b7e2153048535b695c
+
+## 🌟 新機能
+
+### 🎯 AIニュース記事生成オーケストレーター
+コンセプトベースでウェブ検索から記事作成、音声生成まで完全自動化する新しいオーケストレーターを追加しました。
+
+#### 新しいオーケストレータ
+- **`orchestrator-ai-news-article-generation.yml`** - AIニュース記事生成メインオーケストレータ
+  - ウェブ検索→記事作成→音声生成の完全統合パイプライン
+  - ユーザー指定コンセプトから高品質記事を自動生成
+  - 多言語対応（日本語・英語）記事作成
+  - 音声用スクリプト同時生成機能
+
+#### 新しいモジュール
+- **`module-web-search.yml`** - ウェブ検索モジュール（207行）
+  - 指定コンセプトに基づく包括的検索実行
+  - 複数ソースからの情報収集・整理
+  - 記事作成用の構造化データ出力
+
+- **`module-article-creation-ccsdk.yml`** - 記事作成モジュール（282行）
+  - Claude Code SDKによる高品質記事作成
+  - 検索結果ベースの事実確認済み記事生成
+  - タイトル・要約・本文・音声スクリプトを統合出力
+  - フィクション防止機能付き
+
+## 🔧 システム信頼性の大幅改善
+
+### Git Push競合回避システム
+全20個のモジュールワークフローに並列実行時の競合を防ぐリトライ処理を追加しました。
+
+#### 改善されたGit Push処理
+```yaml
+# 並列実行での競合を回避するためのリトライ処理
+for i in {1..3}; do
+  git pull --rebase origin ${{ inputs.branch-name }} || true
+  if git push origin ${{ inputs.branch-name }}; then
+    echo "✅ Push successful on attempt $i"
+    break
+  else
+    echo "⚠️ Push failed on attempt $i, retrying..."
+    # ランダムな待機時間（1-5秒）
+    sleep $((RANDOM % 5 + 1))
+  fi
+done
+```
+
+#### 信頼性向上の特徴
+- **3回リトライ**: push失敗時の自動再試行
+- **ランダム待機**: 1-5秒のランダム間隔で競合回避
+- **詳細ログ**: 成功・失敗状況の明確な記録
+- **自動リベース**: 各試行前の自動同期
+
+#### 対象モジュール（20個）
+- module-article-creation-ccsdk.yml
+- module-web-search.yml
+- module-video-generation-kc-multi-model-ccsdk.yml
+- module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml
+- module-image-generation-kc-multi-model-ccsdk.yml
+- module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml
+- module-video-prompt-optimization-ccsdk.yml
+- module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml
+- その他12モジュール
+
+## 📚 ドキュメント削除・整理
+
+### 削除されたファイル
+- **`module-create-summary.yml`** - 不要なサマリー作成モジュールを削除（80行削除）
+  - システム構成の簡素化
+  - 保守性向上のためのクリーンアップ
+
+## 🚀 使用方法
+
+### AIニュース記事生成の基本手順
+1. GitHub Actionsの **orchestrator-ai-news-article-generation** を選択
+2. 以下のパラメータを入力：
+   - **concept**: "AI技術の最新動向"
+   - **target-language**: "japanese"
+   - **article-style**: "news"
+   - **article-length**: "medium"
+   - **audio-model**: "t2s-elevenlabs-v2"
+3. **Run workflow** をクリック
+4. 約15-20分で記事と音声が生成
+
+### 生成される成果物
+- 検索結果に基づく事実確認済み記事
+- 記事タイトル・要約・本文（Markdown形式）
+- 音声用スクリプト（2-3分程度）
+- 高品質音声ファイル
+- 制作プロセス全体のドキュメント
+- GitHub PRでの整理された表示
+
+## 🎯 技術的改善
+
+### ワークフロー信頼性
+- **競合エラー削減**: 並列実行時の95%以上の成功率達成見込み
+- **自動復旧**: 一時的なネットワークエラーからの自動回復
+- **ログ改善**: トラブルシューティング用の詳細情報提供
+
+### コードベース最適化
+- **不要ファイル削除**: システム構成の簡素化
+- **モジュール統合**: 関連機能の論理的グループ化
+- **パフォーマンス向上**: 無駄な処理の削除
+
+## 🔄 互換性
+
+### 既存システムへの影響
+- **完全後方互換性**: 既存のワークフローには影響なし
+- **信頼性向上**: 既存ワークフローの安定性が大幅に改善
+- **新機能独立**: 記事生成機能は既存システムと独立動作
+
+### 必要な設定
+- **Anthropic API Key**: Claude Code SDK利用
+- **GitHub PAT Token**: PR作成・リポジトリ操作
+- **Web Search API**: 検索機能（設定に応じて）
+
+---
+
+## 📋 ファイル変更履歴
+
+### 新規追加 (3ファイル)
+- `orchestrator-ai-news-article-generation.yml` (134行)
+- `module-web-search.yml` (207行)
+- `module-article-creation-ccsdk.yml` (282行)
+
+### 信頼性改善 (20ファイル)
+- 全モジュールワークフローにGit Push競合回避処理を追加
+- リトライロジック・エラーハンドリング強化
+
+### ファイル削除 (1ファイル)
+- `module-create-summary.yml` (80行削除)
+
+### その他更新
+- `orchestrator-news-video-generation.yml` - 構成調整（12行の変更）
+
+---
+
 # 📰 Professional News Video Generation System Release
 
 **Version:** v0.3.0-news-video  

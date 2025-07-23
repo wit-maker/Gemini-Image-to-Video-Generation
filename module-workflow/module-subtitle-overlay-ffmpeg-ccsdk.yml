@@ -269,7 +269,16 @@ jobs:
             🤖 Generated with [Claude Code](https://claude.ai/code)
 
             Co-Authored-By: Claude <noreply@anthropic.com>"
-            # リベースしてからプッシュ（並列実行での競合を回避）
-            git pull --rebase origin ${{ inputs.branch-name }} || true
-            git push origin ${{ inputs.branch-name }}
+            # 並列実行での競合を回避するためのリトライ処理
+            for i in {1..3}; do
+              git pull --rebase origin ${{ inputs.branch-name }} || true
+              if git push origin ${{ inputs.branch-name }}; then
+                echo "✅ Push successful on attempt $i"
+                break
+              else
+                echo "⚠️ Push failed on attempt $i, retrying..."
+                # ランダムな待機時間（1-5秒）
+                sleep $((RANDOM % 5 + 1))
+              fi
+            done
           fi

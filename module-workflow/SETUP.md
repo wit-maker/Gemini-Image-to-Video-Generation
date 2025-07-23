@@ -42,8 +42,11 @@ ls -la .github/workflows/
 # - module-setup-branch.yml
 # - module-planning-ccsdk.yml (🆕 モデル最適化対応)
 # - module-planning-gca.yml (🆕 モデル最適化対応)
-# - module-create-summary.yml
 # - module-create-pr.yml
+
+## 🆕 AIニュース記事生成モジュール（v0.4.0新機能）
+# - module-web-search.yml (🆕 ウェブ検索)
+# - module-article-creation-ccsdk.yml (🆕 AI記事作成)
 
 ## 🆕 画像・動画生成モジュール
 # - module-image-generation-kc-t2i-fal-imagen4-ultra-ccsdk.yml
@@ -68,6 +71,7 @@ ls -la .github/workflows/
 # - module-video-title-frame-ffmpeg-ccsdk.yml (🎬 タイトルフレーム)
 
 ## 🆕 オーケストレータ
+# - orchestrator-ai-news-article-generation.yml (🆕 AIニュース記事生成版)
 # - orchestrator-video-generation.yml
 # - orchestrator-video-generation-dual.yml
 # - orchestrator-video-generation-dual-with-analysis.yml
