@@ -13,13 +13,20 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 1. セットアップ
 詳細なセットアップ手順は **[SETUP.md](SETUP.md)** を参照してください。
 
+**🆕 v0.5.0必要な設定:**
+- **Anthropic API Key**: Claude Code SDK利用
+- **GitHub PAT Token**: PR作成・リポジトリ操作
+- **FAL_KEY**: FAL APIキー（アカウント作成し、APIキーを取得する）🆕
+- **kamuicode MCP**: 全AI生成サービス統合
+- **ffmpeg**: 動画編集・字幕・音声解析処理
+
 ### 2. ワークフロー実行
 1. GitHub リポジトリの **Actions** タブを開く
 2. 使用したいオーケストレータを選択
 3. **Run workflow** をクリック
 4. プロンプトを入力して実行
 
-## 🎭 オーケストレータ（11種類）
+## 🎭 オーケストレータ（14種類）🆕
 
 オーケストレータは複数のモジュールを組み合わせて、特定の目的に最適化されたワークフローを実行します。
 
@@ -53,18 +60,27 @@ graph LR
 ```mermaid
 graph LR
     A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[📰 News Planning<br/>ニュース企画 CCSDK]
+    
     B --> C[🎨 Anchor Image<br/>アンカー画像生成]
-    C --> D[🎬 Base Video<br/>ベース動画生成]
     B --> E[🎵 Audio Generation<br/>音声生成]
+    B --> I[🎬 Title Background<br/>タイトル背景生成]
+    
+    C --> D[🎬 Base Video<br/>ベース動画生成]
     D --> F[👄 Lipsync<br/>リップシンク生成]
     E --> F
-    F --> G[🔍 Subtitle Analysis<br/>字幕タイミング解析 GCA]
+    
+    F --> G[🔍 Subtitle Analysis<br/>字幕タイミング解析 CCSDK]
     G --> H[📝 Subtitle Overlay<br/>字幕追加 ffmpeg]
-    B --> I[🎬 Title Background<br/>タイトル背景生成]
+    
     I --> J[🎨 Title Composition<br/>タイトルテキスト合成]
     J --> K[🎞️ Title Frame<br/>タイトルフレーム追加 ffmpeg]
     H --> K
+    
     K --> L[📝 Create PR<br/>プルリクエスト作成]
+    
+    style G fill:#e8f5e8
+    style H fill:#e3f2fd
+    style K fill:#e3f2fd
 ```
 
 **特徴:**
@@ -171,27 +187,12 @@ graph LR
 - リソース集約的な実行
 - 統一テーマでの多角的表現
 
-### 6. `orchestrator-gemini-i2v-generation-analysis.yml`
-**【Gemini統合版】Gemini CLI Action中心ワークフロー**
+### 6. `orchestrator-gemini-i2v-generation-analysis.yml` **（廃止済み）**
+**【Gemini統合版】→ v0.5.0で`orchestrator-i2v-generation-analysis-ccsdk.yml`に移行**
 
-```mermaid
-graph LR
-    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>AI企画 Gemini CLI Action]
-    B --> C[🎨 Image Generation<br/>画像生成 Imagen4 Fast + GCA]
-    C --> D[🎬 Video Generation<br/>動画生成 Hailuo-02 Pro + GCA]
-    D --> E[🔍 Video Analysis<br/>動画分析 Gemini Vision]
-    E --> F[📝 Create PR<br/>プルリクエスト作成]
-    
-    style B fill:#e1f5fe
-    style C fill:#e1f5fe
-    style D fill:#e1f5fe
-    style E fill:#e1f5fe
-```
+~~このオーケストレータはv0.5.0でClaude Code SDK版に統合移行されました。~~
 
-**特徴:**
-- Claude Code SDK を使わずGemini CLI Actionで統一
-- 異なるAIモデル組み合わせのテスト用
-- Gemini APIキーのみで動作
+**移行先:** `orchestrator-i2v-generation-analysis-ccsdk.yml`（上記11番参照）
 
 ### 7. `orchestrator-banner-advertisement-creation.yml`
 **【バナー広告作成版】AI自動バナー生成ワークフロー**
@@ -281,7 +282,71 @@ graph LR
   - `t2i-fal-flux-schnell`: 超高速生成
   - `t2i-fal-rundiffusion-photo-flux`: フォトリアリスティック特化
 
-## 🧩 モジュール詳細（26種類）🆕
+### 🆕 10. `orchestrator-i2v-fal-upload-test.yml` **（v0.5.0新機能）**
+**【I2V FALアップロードテスト】画像→動画生成とFALアップロード統合**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[📤 Upload Image<br/>画像FALアップロード]
+    B --> C[🎯 Planning<br/>企画立案 CCSDK]
+    C --> D[⚙️ Video Optimization<br/>プロンプト最適化]
+    D --> E[🎬 Video Generation<br/>I2V動画生成]
+    E --> F[📝 Create PR<br/>プルリクエスト作成]
+    
+    style B fill:#e3f2fd
+```
+
+**特徴:**
+- **FALアップロード統合**: 生成動画の自動FAL URL変換
+- **I2V最適化**: 画像→動画生成に特化
+- **アップロード検証**: FAL URLの動作確認機能
+- **完全パイプライン**: 生成→アップロード→検証の自動化
+
+### 🆕 11. `orchestrator-i2v-generation-analysis-ccsdk.yml` **（v0.5.0改良）**
+**【I2V生成・解析統合】Claude Code SDK版動画生成・解析**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Planning<br/>企画立案 GCA]
+    B --> C[🎨 Image Generation<br/>画像生成 GCA]
+    C --> D[🎬 Video Generation<br/>I2V動画生成 GCA]
+    D --> E[🔍 Video Analysis<br/>動画解析 CCSDK]
+    E --> F[📝 Create PR<br/>プルリクエスト作成]
+    
+    style E fill:#e8f5e8
+```
+
+**特徴:**
+- **ハイブリッド構成**: GCA（生成）+ CCSDK（解析）の組み合わせ
+- **動画解析のみCCSDK**: 解析部分だけをClaude Code SDK版に移行
+- **統合ワークフロー**: 生成と解析の一体化処理
+- **技術移行テスト**: 段階的なCCSDK移行の検証用
+
+### 🆕 12. `orchestrator-v2v-pixverse-lipsync-single.yml` **（v0.5.0新機能）**
+**【Pixverseリップシンク単体】制限対応高品質リップシンク**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Pixverse Planning<br/>制限チェック企画 CCSDK]
+    B --> C[🎨 Image Generation<br/>画像生成]
+    B --> D[🎤 Audio Generation<br/>MiniMax Voice Design]
+    C --> E[🎬 Video Generation<br/>動画生成（5MB以下）]
+    D --> F[👄 Pixverse Lipsync<br/>Pixverseリップシンク]
+    E --> F
+    F --> G[📝 Create PR<br/>プルリクエスト作成]
+    
+    style B fill:#fff3e0
+    style D fill:#fff3e0
+    style F fill:#fff3e0
+```
+
+**特徴:**
+- **Pixverse制限対応**: 5MB動画/30秒音声の厳格な制限チェック
+- **並列処理**: 画像生成と音声生成を同時実行
+- **MiniMax Voice Design**: 高品質日本語音声生成
+- **制限内最適化**: Pixverse専用の最適化された処理フロー
+
+## 🧩 モジュール詳細（33種類）🆕
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
 
@@ -338,7 +403,38 @@ AI: Claude Code SDK
   - 動的モデル選択システム
   - JSON形式音声設定カスタマイズ
   - プロ品質ナレーション生成
+  - Pixverse制限チェック機能（30秒以内確認）
 依存: kamuicode-usage.md（モデル情報管理）
+```
+
+#### `module-audio-generation-kc-minimax-voice-design-ccsdk.yml` 🆕 **（v0.5.0新機能）**
+**MiniMax Voice Design音声生成**
+```yaml
+技術: kamuicode MCP + Claude Code SDK
+機能: MiniMax Voice Designによる高品質日本語音声生成
+特徴:
+  - 自然言語による音声キャラクター設定対応
+  - 日本語音声に最適化された高品質生成
+  - リップシンクに適した明瞭な発音
+  - 感情表現豊かな音声合成
+  - プロ品質・キャラクター音声対応
+依存: kamuicode-usage.md（モデル情報管理）
+出力: 高品質音声ファイル、音声URL記録
+```
+
+#### `module-planning-pixverse-lipsync-ccsdk.yml` 🆕 **（v0.5.0新機能）**
+**Pixverseリップシンク企画**
+```yaml
+AI: Claude Code SDK
+機能: Pixverseの厳格な制限に対応した企画立案
+特徴:
+  - Pixverseの厳格な制限（5MB動画/30秒音声）対応
+  - 事前チェック機能付き企画立案
+  - 制限内最適化された処理フロー
+  - セグメント分割・品質制御
+  - 制限超過時の自動警告・代替案提示
+出力: 制限対応済み企画書、最適化パラメータ
+行数: 509行
 ```
 
 #### `module-lipsync-generation-kc-multi-model-ccsdk.yml` 🆕
@@ -353,16 +449,19 @@ AI: Claude Code SDK
 依存: kamuicode-usage.md（モデル情報管理）
 ```
 
-#### `module-lipsync-video-analysis-gca.yml` 🆕
-**リップシンク解析**
+#### `module-lipsync-video-analysis-ccsdk.yml` 🆕 **（v0.5.0改良版）**
+**リップシンク動画解析**
 ```yaml
-AI: Gemini Vision (GCA)
-機能: リップシンク動画の高精度解析
+AI: Claude Code SDK + ffmpeg
+機能: 音声ファイルの実際の音声波形解析による字幕生成
 特徴:
-  - 音声と口の動きから字幕タイミング決定
-  - 字幕タイミング設定JSON自動生成
-  - Gemini Visionによる高精度解析
-出力: subtitle-timing.json, 動画解析レポート
+  - 音声ファイルの実際の音声波形を分析して発話タイミング検出
+  - 日本語文法に基づく適切なセグメント分割
+  - SRT形式字幕ファイル自動生成
+  - 品質チェックと自動修正機能
+  - ffmpeg活用の高精度タイミング分析
+出力: subtitle.srt, analysis-report.md, 詳細分析レポート
+技術移行: 旧GCA版からClaude Code SDK版への完全移行
 ```
 
 #### `module-subtitle-overlay-ffmpeg-ccsdk.yml` 🆕  
@@ -387,6 +486,54 @@ AI: Gemini Vision (GCA)
   - タイトル表示時間のカスタマイズ
   - 音声・映像の完全統合処理
 処理: ffmpegによる高品質動画編集
+```
+
+### 🆕 高度なワークフロー統合モジュール（v0.5.0新機能）
+
+#### `module-upload-fal-ccsdk.yml` 🆕 **（v0.5.0新機能）**
+**FALアップロードモジュール**
+```yaml
+技術: kamuicode MCP + Claude Code SDK
+機能: ローカルファイルの自動FAL URL変換
+特徴:
+  - 動画・画像・音声ファイル対応
+  - アップロード進捗管理
+  - エラーハンドリング・リトライ機能
+  - 自動URL検証・動作確認
+  - 複数ファイル形式対応
+出力: FAL URL、アップロード状況レポート
+行数: 246行
+```
+
+#### `module-video-concatenation-ffmpeg-ccsdk.yml` 🆕 **（v0.5.0新機能）**
+**FFmpeg動画結合モジュール**
+```yaml
+技術: ffmpeg + Claude Code SDK
+機能: 複数動画の高品質結合
+特徴:
+  - 複数動画の高品質結合
+  - 解像度・フレームレート統一処理
+  - 音声同期保持
+  - プロフェッショナル品質の動画編集
+  - 動画形式自動変換・最適化
+処理: ffmpegによるプロレベル動画結合
+出力: 統合動画ファイル、結合レポート
+行数: 295行
+```
+
+#### `module-video-analysis-ccsdk.yml` 🆕 **（v0.5.0改良版）**
+**動画解析モジュール（Claude Code SDK版）**
+```yaml
+技術: Claude Code SDK（旧GCA版から移行）
+機能: 動画品質の詳細分析・評価
+特徴:
+  - 旧GCA版からClaude Code SDK版への完全移行
+  - 動画メタデータ詳細分析
+  - 品質評価・最適化提案
+  - より安定したCCSDK基盤での動作
+  - 統合されたエラーハンドリング
+出力: 詳細動画分析レポート、品質評価結果
+移行: module-video-analysis-gca.yml から技術移行（76行の変更）
 ```
 
 ### 📋 セットアップ・管理モジュール
@@ -513,18 +660,12 @@ AI: Claude (画像解析 + プロンプト生成)
 出力: 最適化されたプロンプト + 分析レポート
 ```
 
-#### `module-video-analysis-gca.yml`
-**動画品質分析**
-```yaml
-AI: Gemini Vision
-分析観点: 商用利用での厳格な評価
-評価項目:
-  - 技術品質（解像度、フレームレート、色再現）
-  - 視覚的インパクト（構図、ライティング、美感）  
-  - コンテンツ適合性（ブランド安全性、ターゲット適合性）
-  - 商用利用可能性（SNS広告、企業PR、TV CM適性）
-出力: 詳細な改善提案付き評価レポート
-```
+#### `module-video-analysis-gca.yml` **（廃止済み）**
+**動画品質分析 → v0.5.0で`module-video-analysis-ccsdk.yml`に移行**
+
+~~このモジュールはv0.5.0でClaude Code SDK版に技術移行されました。~~
+
+**移行先:** `module-video-analysis-ccsdk.yml`（上記参照）
 
 ### 📄 バナー生成モジュール
 
@@ -549,9 +690,9 @@ AI: Flux Kontext Max
 処理: レイアウト・フォント・色彩の最適化
 ```
 
-## 🔧 システム信頼性の大幅改善（v0.4.0）
+## 🔧 システム信頼性の大幅改善（v0.5.0）
 
-全26個のモジュールワークフローに**Git Push競合回避システム**を追加しました。
+全33個のモジュールワークフローに**Git Push競合回避システム**を継続適用しています。
 
 ### 改善されたGit Push処理
 ```yaml
@@ -576,11 +717,12 @@ done
 - **自動リベース**: 各試行前の自動同期
 - **95%以上の成功率**: 並列実行時の大幅な安定性向上
 
-### 対象モジュール（全26個）
-v0.4.0で信頼性改善が適用されたモジュール：
-- 新規追加: `module-web-search.yml`, `module-article-creation-ccsdk.yml`
-- 既存20モジュール: すべてのワークフローに競合回避システム適用
-- 削除: `module-create-summary.yml`（システム簡素化）
+### 対象モジュール（全33個）🆕
+v0.5.0で信頼性改善が適用されたモジュール：
+- **v0.5.0新規追加**: 7個の新モジュールにも競合回避システム適用
+- **継続適用**: v0.4.0で追加された`module-web-search.yml`, `module-article-creation-ccsdk.yml`
+- **既存全モジュール**: 全33個のワークフローで95%以上の成功率維持
+- **技術移行**: GCA版からCCSDK版への移行でも安定性確保
 
 ## 🏗️ システムアーキテクチャ
 
@@ -593,7 +735,7 @@ graph TB
         O2["orchestrator-video-generation-dual.yml<br/>2動画版"]
         O3["orchestrator-video-generation-dual-with-analysis.yml<br/>2動画版+分析"]
         O4["orchestrator-video-generation-quad.yml<br/>4動画版"]
-        O5["orchestrator-gemini-i2v-generation-analysis.yml<br/>Gemini統合版"]
+        O5["🔄 orchestrator-i2v-generation-analysis-ccsdk.yml<br/>I2V生成・解析統合版（旧Gemini版から移行）"]
         O6["orchestrator-banner-advertisement-creation.yml<br/>バナー広告版"]
         O7["🆕 orchestrator-multi-model-video-test.yml<br/>マルチモデル動画版"]
         O8["🆕 orchestrator-multi-model-image-test.yml<br/>マルチモデル画像版"]
@@ -616,7 +758,7 @@ graph TB
             M4["module-video-prompt-optimization-ccsdk.yml<br/>プロンプト最適化"]
             M5["module-video-generation-kc-r2v-fal-vidu-q1-ccsdk.yml<br/>動画生成 (Vidu)"]
             M5M["🆕 module-video-generation-kc-multi-model-ccsdk.yml<br/>マルチモデル動画生成"]
-            M6["module-video-analysis-gca.yml<br/>動画品質分析"]
+            M6["🔄 module-video-analysis-ccsdk.yml<br/>動画品質分析（GCA版から移行）"]
         end
         
         subgraph "バナー生成モジュール"
@@ -633,7 +775,7 @@ graph TB
             M10["🆕 module-news-planning-ccsdk.yml<br/>ニュース企画立案"]
             M11["🆕 module-audio-generation-kc-multi-model-ccsdk.yml<br/>マルチモデル音声生成"]
             M12["🆕 module-lipsync-generation-kc-multi-model-ccsdk.yml<br/>リップシンク生成"]
-            M13["🆕 module-lipsync-video-analysis-gca.yml<br/>リップシンク解析"]
+            M13["🔄 module-lipsync-video-analysis-ccsdk.yml<br/>リップシンク解析（GCA版から移行）"]
             M14["🆕 module-subtitle-overlay-ffmpeg-ccsdk.yml<br/>字幕オーバーレイ"]
             M16["🆕 module-video-title-frame-ffmpeg-ccsdk.yml<br/>タイトルフレーム"]
         end

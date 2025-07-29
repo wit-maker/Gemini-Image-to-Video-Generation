@@ -122,7 +122,7 @@ jobs:
   # 6. 動画分析（2つ並列）
   video-analysis-1:
     needs: [setup, planning, image-generation-1, video-generation-1, video-prompt-optimization-1]
-    uses: ./.github/workflows/module-video-analysis-gca.yml
+    uses: ./.github/workflows/module-video-analysis-ccsdk.yml
     with:
       concept: ${{ inputs.concept }}
       image-url: ${{ needs.image-generation-1.outputs.image-url }}
@@ -133,12 +133,13 @@ jobs:
       branch-name: ${{ needs.setup.outputs.branch-name }}
       folder-name: ${{ needs.setup.outputs.folder-name }}
     secrets:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
       gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
       github_pat: ${{ secrets.PAT_TOKEN }}
 
   video-analysis-2:
     needs: [setup, planning, image-generation-2, video-generation-2, video-prompt-optimization-2]
-    uses: ./.github/workflows/module-video-analysis-gca.yml
+    uses: ./.github/workflows/module-video-analysis-ccsdk.yml
     with:
       concept: ${{ inputs.concept }}
       image-url: ${{ needs.image-generation-2.outputs.image-url }}
@@ -149,6 +150,7 @@ jobs:
       branch-name: ${{ needs.setup.outputs.branch-name }}
       folder-name: ${{ needs.setup.outputs.folder-name }}
     secrets:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
       gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
       github_pat: ${{ secrets.PAT_TOKEN }}
 

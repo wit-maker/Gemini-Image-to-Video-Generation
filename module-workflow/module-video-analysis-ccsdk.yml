@@ -1,4 +1,4 @@
-name: module-video-analysis-gca
+name: module-video-analysis-ccsdk
 
 on:
   workflow_call:
@@ -41,9 +41,12 @@ on:
         description: '完了ステータス'
         value: ${{ jobs.video-analysis.outputs.completed }}
     secrets:
+      anthropic_api_key:
+        description: 'Anthropic API Key'
+        required: true
       gemini_api_key:
         description: 'Gemini API Key'
-        required: true
+        required: false
       github_pat:
         description: 'GitHub Token'
         required: true
@@ -61,13 +64,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch-name }}
-          
-      - name: 📊 動画分析エージェント (Gemini Vision)
-        id: analyze-video
-        uses: google-gemini/gemini-cli-action@main
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          GEMINI_API_KEY: ${{ secrets.gemini_api_key }}
-          prompt: |
+          node-version: '20'
+      
+      - name: Install Claude Code SDK
+        run: npm install @anthropic-ai/claude-code
+          
+      - name: 📊 動画分析エージェント (Claude Code)
+        id: analyze-video
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.anthropic_api_key }}
+        run: |
+          echo "::group::📊 Video Analysis Agent Execution"
+          echo "Starting at: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+          
+          # プロンプトの構築
+          PROMPT="
             📊 **動画分析タスク - Gemini Vision エージェント**
             
             **タスク**: kamuicodeで生成された動画を視覚的に分析し、品質評価を行う
@@ -142,8 +157,9 @@ jobs:
                 - **次回制作への提言**: より良い結果を得るための具体的アドバイス
                
             8. **分析結果の保存**:
-               ```
-               write_file(${{ inputs.folder-name }}/analysis-${{ inputs.video_index }}/video-analysis-${{ inputs.video_index }}.md, 詳細な分析レポート)
+               Write tool を使用して詳細な分析レポートをMarkdownファイルとして保存してください。
+               
+               ファイルパス: ${{ inputs.folder-name }}/analysis-${{ inputs.video_index }}/video-analysis-${{ inputs.video_index }}.md
                
                **レポート必須項目**:
                - 冒頭に「商用利用可否判定」を大きく記載
@@ -152,7 +168,6 @@ jobs:
                - 業界標準との比較
                - 推奨利用シーン・非推奨利用シーン
                - 制作会社への具体的フィードバック
-               ```
                
             **評価の厳格性について**: 
             - **妥協しない**: 「それなりに良い」では不十分。商用利用の観点で厳しく評価
@@ -169,10 +184,49 @@ jobs:
             - 4-5点: 要修正、現状では使用推奨不可
             - 1-3点: 使用不可、作り直し必要
             
+            **使用可能なツール**:
+            - Read/Write/Edit: ファイル操作
+            - Bash: コマンド実行
+            - WebFetch: 動画URLの内容取得と分析"
+          
+          echo "🚀 Starting Video Analysis Agent Claude Code CLI..."
+          echo "📝 Prompt length: ${#PROMPT}"
+          
+          # Claude Code CLIの実行
+          npx @anthropic-ai/claude-code \
+            --max-turns 60 \
+            --verbose \
+            -p "$PROMPT" || {
+              echo "::error::❌ Claude Code CLI execution failed"
+              exit 1
+            }
+          
+          echo "::endgroup::"
+            
       - name: Mark analysis complete
         id: analyze-complete
         run: |
-          echo "completed=true" >> $GITHUB_OUTPUT
+          ANALYSIS_DIR="${{ inputs.folder-name }}/analysis-${{ inputs.video_index }}"
+          
+          # 生成されたファイルの確認
+          if [ -f "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md" ]; then
+            echo "✅ 動画分析レポート作成完了"
+            echo "📄 Analysis report preview:"
+            head -20 "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "completed=true" >> $GITHUB_OUTPUT
+          else
+            echo "::warning::動画分析レポートが見つかりません。空のレポートを作成します。"
+            mkdir -p "$ANALYSIS_DIR"
+            echo "# 動画分析レポート - ${{ inputs.concept }}" > "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "## 分析未完了" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "動画分析が正常に完了しませんでした。手動での確認が必要です。" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "- 動画URL: ${{ inputs.video-url }}" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "- 画像URL: ${{ inputs.image-url }}" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "- コンセプト: ${{ inputs.concept }}" >> "$ANALYSIS_DIR/video-analysis-${{ inputs.video_index }}.md"
+            echo "completed=true" >> $GITHUB_OUTPUT
+          fi
           
       - name: Commit analysis results
         env:

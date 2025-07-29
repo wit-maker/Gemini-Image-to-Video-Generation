@@ -254,11 +254,12 @@ jobs:
              - ユーザーの指定した原稿の内容を拡大解釈することなく、忠実に反映すること。
 
           2. **画像プロンプト** ($PLANNING_DIR/image-prompt-${VIDEO_INDEX}.txt)
-             - 女性のニュースアンカー（$ANCHOR_TYPE タイプ）
+             - 日本人女性のニュースアンカー（$ANCHOR_TYPE タイプ）
              - プロフェッショナルな女性らしい服装（スーツまたはブラウス）
-             - ニューススタジオの背景
+             - 日本のニューススタジオの背景
              - 正面向き、リップシンクに適した表情
              - 高品質、フォトリアリスティック
+             - 日本人の特徴を持つ美しい女性アナウンサー
              - 英語で作成
 
           3. **動画コンセプト** ($PLANNING_DIR/video-concept-${VIDEO_INDEX}.txt)
@@ -269,11 +270,11 @@ jobs:
              - 英語で作成
 
           4. **音声設定** ($PLANNING_DIR/voice-settings.json)
-             - 女性の声で$ANCHOR_TYPE に合った音声設定
-             - 適切な話速
-             - トーンと感情の設定
+             - 日本人女性アナウンサーの声で$ANCHOR_TYPE に合った音声設定
+             - 日本語ニュース番組に適した話速
+             - プロフェッショナルなトーンと感情の設定
              - JSON形式で作成
-             例: {\"voice\": \"female_professional\", \"gender\": \"female\", \"speed\": 1.0, \"pitch\": 0, \"emotion\": \"confident\"}
+             例: {\"voice_id\": \"Inspirational_girl\", \"pitch\": 1.2, \"language_boost\": \"Japanese\", \"emotion\": \"neutral\", \"speed\": 1.0}
 
           5. **ニュースタイトル** ($PLANNING_DIR/news-title.txt)
              - 魅力的で内容を的確に表すタイトル
@@ -300,7 +301,7 @@ jobs:
           - **ニュースタイトルは英語で作成**（バナー表示用）
           - リップシンクを前提とした内容にする
           - $NEWS_STYLE と $ANCHOR_TYPE の一貫性を保つ
-          - **性別統一**: 画像、動画、音声すべて女性で統一すること
+          - **性別・国籍統一**: 画像、動画、音声すべて日本人女性で統一すること
           - 実際のニュース番組のようなプロフェッショナルな仕上がりを目指す
 
           **GitHub Outputの設定**:

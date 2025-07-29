@@ -112,7 +112,7 @@ jobs:
       model-type: ${{ inputs.audio-model }}
       text-prompt: ${{ needs.article-creation.outputs.audio-script }}
       voice-settings: |
-        ${{ inputs.voice-settings != '' && inputs.voice-settings || '{"voice_type": "female", "speaking_rate": 1.0, "pitch": 0.0, "volume": 1.0, "language": "ja"}' }}
+        ${{ inputs.voice-settings != '' && inputs.voice-settings || '{"voice_type": "japanese_female_news_anchor", "speaking_rate": 1.0, "pitch": 0.0, "volume": 1.0, "language": "ja", "style": "professional_news"}' }}
       branch-name: ${{ needs.create-branch.outputs.branch-name }}
       folder-name: ${{ needs.create-branch.outputs.folder-name }}
       audio_index: "1"

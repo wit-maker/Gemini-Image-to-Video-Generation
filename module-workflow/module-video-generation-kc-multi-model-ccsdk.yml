@@ -160,10 +160,8 @@ jobs:
           # Claude Code CLIの実行（動画生成系ツールはワイルドカードで許可）
           npx @anthropic-ai/claude-code \
             --mcp-config="$MCP_CONFIG_ABS_PATH" \
-            --allowedTools "mcp__t2v-*,mcp__i2v-*,mcp__r2v-*,mcp__v2v-*,Read,Bash" \
             --max-turns 40 \
             --verbose \
-            --permission-mode "acceptEdits" \
             -p "$PROMPT" || {
               echo "::error::❌ Claude Code CLI execution failed"
               exit 1

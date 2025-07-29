@@ -65,10 +65,15 @@ ls -la .github/workflows/
 ## 🆕 ニュース動画生成モジュール（v0.3.0新機能）
 # - module-news-planning-ccsdk.yml (📰 ニュース企画立案)
 # - module-audio-generation-kc-multi-model-ccsdk.yml (🎵 音声生成)
+# - module-audio-generation-kc-minimax-voice-design-ccsdk.yml (🎤 MiniMax Voice Design音声生成) 🆕 v0.5.0
 # - module-lipsync-generation-kc-multi-model-ccsdk.yml (👄 リップシンク生成)
-# - module-lipsync-video-analysis-gca.yml (🔍 リップシンク解析)
+# - module-lipsync-video-analysis-ccsdk.yml (🔍 リップシンク解析 - Claude Code版) 🆕 v0.5.0
+# - module-planning-pixverse-lipsync-ccsdk.yml (🎯 Pixverseリップシンク企画) 🆕 v0.5.0
 # - module-subtitle-overlay-ffmpeg-ccsdk.yml (📝 字幕オーバーレイ)
 # - module-video-title-frame-ffmpeg-ccsdk.yml (🎬 タイトルフレーム)
+# - module-upload-fal-ccsdk.yml (📤 FALアップロード) 🆕 v0.5.0
+# - module-video-concatenation-ffmpeg-ccsdk.yml (🎞️ 動画結合) 🆕 v0.5.0
+# - module-video-analysis-ccsdk.yml (🔍 動画解析 - Claude Code版) 🆕 v0.5.0
 
 ## 🆕 オーケストレータ
 # - orchestrator-ai-news-article-generation.yml (🆕 AIニュース記事生成版)
@@ -81,6 +86,9 @@ ls -la .github/workflows/
 # - orchestrator-multi-model-video-test.yml (🆕 マルチモデル動画テスト版)
 # - orchestrator-multi-model-image-test.yml (🆕 マルチモデル画像テスト版)
 # - orchestrator-news-video-generation.yml (🆕 ニュース動画生成版)
+# - orchestrator-i2v-fal-upload-test.yml (🆕 I2V FALアップロードテスト版) 🆕 v0.5.0
+# - orchestrator-i2v-generation-analysis-ccsdk.yml (🆕 I2V生成・解析統合 - Claude Code版) 🆕 v0.5.0
+# - orchestrator-v2v-pixverse-lipsync-single.yml (🆕 Pixverseリップシンク単体版) 🆕 v0.5.0
 ```
 
 ### 1.3 MCP設定ファイルの配置
@@ -172,6 +180,7 @@ cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workf
 | `ANTHROPIC_API_KEY` | Claude API Key | **必須** | [Anthropic Console](https://console.anthropic.com/)でAPI Keyを作成 |
 | `PAT_TOKEN` | GitHub Personal Access Token | **必須** | Settings → Developer settings → Personal access tokens |
 | `GEMINI_API_KEY` | Gemini API Key | **必須** | [Google AI Studio](https://aistudio.google.com/)でAPI Keyを作成 |
+| `FAL_KEY` | FAL API Key | **必須** 🆕 | [FAL](https://fal.ai/)でアカウント作成し、APIキーを取得 |
 
 **🆕 v0.3.0での必要性の変更:**
 - `GEMINI_API_KEY`が**必須**に変更：従来のGCAモジュール＋ニュース動画生成システムでリップシンク解析に使用
@@ -197,7 +206,7 @@ cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workf
 5. 「Generate token」をクリック
 6. 作成されたトークンをコピー（⚠️この画面でしか表示されません）
 
-### 2.4 GEMINI_API_KEYの取得方法（オプション）
+### 2.4 GEMINI_API_KEYの取得方法
 
 1. [Google AI Studio](https://aistudio.google.com/)にアクセス
 2. Googleアカウントでログイン
@@ -205,7 +214,8 @@ cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workf
 4. 「Create API key」をクリック
 5. 作成されたAPIキーをコピー
 
-### 2.5 Secrets設定手順
+
+### 2.6 Secrets設定手順
 
 **2つの方法があります：**
 
@@ -218,8 +228,11 @@ gh secret set ANTHROPIC_API_KEY --app actions
 
 gh secret set PAT_TOKEN --app actions
 
-# オプション
+# 必須
 gh secret set GEMINI_API_KEY --app actions
+
+# 🆕 v0.5.0で必須
+gh secret set FAL_KEY --app actions
 
 # 設定確認
 gh secret list --app actions
@@ -243,17 +256,23 @@ gh secret list --app actions
 - **Secret**: 取得したPersonal Access Token
 - **Add secret**をクリック
 
-**GEMINI_API_KEYの追加（オプション）：**
+**GEMINI_API_KEYの追加：**
 - **Name**: `GEMINI_API_KEY`
 - **Secret**: 取得したGemini APIキー
 - **Add secret**をクリック
 
-### 2.6 設定確認
+**🆕 FAL_KEYの追加（v0.5.0で必須）：**
+- **Name**: `FAL_KEY`
+- **Secret**: 取得したFAL APIキー
+- **Add secret**をクリック
+
+### 2.7 設定確認
 
 設定完了後、Secretsページに以下が表示されることを確認：
 - ✅ `ANTHROPIC_API_KEY` (Updated X minutes ago)
 - ✅ `PAT_TOKEN` (Updated X minutes ago)
-- ✅ `GEMINI_API_KEY` (Updated X minutes ago) ※設定した場合
+- ✅ `GEMINI_API_KEY` (Updated X minutes ago)
+- ✅ `FAL_KEY` (Updated X minutes ago) 🆕
 
 ## 📁 ステップ3: ディレクトリ構造
 

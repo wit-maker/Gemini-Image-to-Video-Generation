@@ -24,6 +24,7 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 | Luma Ray2 | 動画編集・スタイル変換 | 中速 | 元動画依存 | 動画の修正・変換 |
 | Vidu Q1 | 参照動画からの生成 | 中速 | 720p/4秒 | スタイル模倣 |
 | Creatify Lipsync | リアルなリップシンク動画 | 高速 | 元動画依存 | トーキングヘッド・プレゼン動画 |
+| Pixverse Lipsync | Pixverseリップシンク特化、制限厳格 | 中速 | 制限：5MB/30秒 | 高品質リップシンク（制限内） |
 
 ### その他のモデル
 | モデル名 | 特徴 | 生成速度 | 出力形式 | 用途 |
@@ -34,14 +35,13 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 | Google Lyria | 高品質音楽生成 | 中速 | MP3/WAV | BGM・効果音 |
 | ThinkSound | 動画に合う音声生成 | 高速 | MP3 | 動画音響効果 |
 | MiniMax Speech-02 Turbo | 超高速音声合成 | 超高速 | MP3/WAV | ナレーション・読み上げ |
+| MiniMax Voice Design | 高品質音声合成・デザイン | 中速 | MP3/WAV | プロ品質音声・キャラクター音声 |
 | Bria Background Removal | 動画背景削除 | 中速 | 透過動画 | 動画合成・クロマキー |
 | Flux Kontext Trainer | LoRAモデル訓練 | 遅い | LoRA | カスタムモデル作成 |
 
 ## 利用可能ツール
 ### 画像生成
-- `mcp__t2i-google-imagen3__imagen3_submit` - Google Imagen3 画像生成開始
-- `mcp__t2i-google-imagen3__imagen3_status` - Google Imagen3 生成ステータス確認
-- `mcp__t2i-google-imagen3__imagen3_result` - Google Imagen3 生成結果取得
+- `mcp__t2i-google-imagen3__imagen_t2i` - Google Imagen3 画像生成（一括実行）
 - `mcp__t2i-fal-imagen4-ultra__imagen4_ultra_submit` - Fal.ai Imagen4 Ultra 画像生成開始
 - `mcp__t2i-fal-imagen4-ultra__imagen4_ultra_status` - Fal.ai Imagen4 Ultra 生成ステータス確認
 - `mcp__t2i-fal-imagen4-ultra__imagen4_ultra_result` - Fal.ai Imagen4 Ultra 生成結果取得
@@ -81,6 +81,9 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 - `mcp__v2v-fal-creatify-lipsync__lipsync_submit` - リップシンク動画生成開始
 - `mcp__v2v-fal-creatify-lipsync__lipsync_status` - リップシンク生成ステータス確認
 - `mcp__v2v-fal-creatify-lipsync__lipsync_result` - リップシンク生成結果取得
+- `mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_submit` - Pixverseリップシンク生成開始（制限: 5MB動画/30秒音声）
+- `mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_status` - Pixverseリップシンク生成ステータス確認
+- `mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_result` - Pixverseリップシンク生成結果取得
 
 ### 音楽生成
 - `mcp__t2m-google-lyria__lyria_generate` - Google Lyria音楽生成（一括実行）
@@ -104,6 +107,9 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 - `mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_submit` - テキストから音声生成開始（超高速）
 - `mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_status` - 音声生成ステータス確認
 - `mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_result` - 音声生成結果取得
+- `mcp__v2v-fal-minimax-voice-design__voice_design_submit` - MiniMax Voice Design音声生成開始（高品質T2S）
+- `mcp__v2v-fal-minimax-voice-design__voice_design_status` - Voice Design音声生成ステータス確認
+- `mcp__v2v-fal-minimax-voice-design__voice_design_result` - Voice Design音声生成結果取得
 
 ### モデル訓練
 - `mcp__train-fal-flux-kontext-trainer__flux_kontext_trainer_submit` - LoRAモデル訓練開始
@@ -149,3 +155,79 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2m-google-l
 ```
 
 **重要**: 音楽生成は段階的実行（submit/status/result）ではなく、`lyria_generate`での一括実行が正しい方法です。
+
+### Pixverseリップシンクの正しい手順
+**Pixverseは厳格な制限があるため、事前チェックが必須：**
+
+#### 制限事項
+- **動画サイズ**: 5MB以下必須
+- **音声長さ**: 30秒以内必須
+- **動画形式**: MP4推奨
+- **音声形式**: MP3/WAV対応
+
+#### 1. 事前チェック
+```bash
+# 動画サイズ確認（5MB以下必須）
+claude --allowedTools "Bash" -p "動画ファイルサイズ確認: [動画URL]が5MB以下かチェック"
+
+# 音声長さ確認（30秒以内必須）
+claude --allowedTools "Bash" -p "音声ファイル長さ確認: [音声URL]が30秒以内かチェック"
+```
+
+#### 2. Pixverseリップシンク生成開始
+```bash
+claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_submit" -p "Pixverseリップシンク開始: 動画URL=[動画URL] 音声URL=[音声URL]"
+```
+
+#### 3. ステータス確認（2-3分後）
+```bash
+claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_status" -p "Pixverseリップシンクステータス確認: リクエストID=[ID]"
+```
+
+#### 4. 結果ダウンロード・再生
+```bash
+claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_result,Bash" -p "Pixverseリップシンク結果取得・再生: リクエストID=[ID]"
+```
+
+#### ⚠️ 重要な注意点
+- **制限超過時**: エラーで処理停止、制限内に収める必要あり
+- **品質最適化**: 短時間・小サイズでも高品質リップシンクを実現
+- **セグメント分割**: 長い動画は複数セグメントに分割して処理
+- **事前検証**: 必ず制限チェックしてから実行すること
+
+
+## t2s-fal-minimax-speech-02-turbo 音声オプション設定
+
+  音声ID (voice_id)
+
+  - Wise_Woman (賢明な女性)
+  - Friendly_Person (親しみやすい人)
+  - Inspirational_girl (インスピレーショナルな女の子)
+  - Deep_Voice_Man (低い声の男性)
+  - Calm_Woman (落ち着いた女性)
+  - Casual_Guy (カジュアルな男性)
+  - Lively_Girl (活発な女の子)
+  - Patient_Man (忍耐強い男性)
+  - Young_Knight (若い騎士)
+  - Determined_Man (決意のある男性)
+  - Lovely_Girl (可愛らしい女の子)
+  - Decent_Boy (きちんとした男の子)
+  - Imposing_Manner (威厳のある態度)
+  - Elegant_Man (優雅な男性)
+  - Abbess (女子修道院長)
+  - Sweet_Girl_2 (甘い女の子2)
+  - Exuberant_Girl (陽気な女の子)
+
+  感情設定 (emotion)
+
+  happy, sad, angry, fearful, disgusted, surprised, neutral
+
+  音声品質設定
+
+  - speed: 0.5-2.0 (話速)
+  - pitch: -12〜12 (音程)
+  - vol: 0-10 (音量)
+  - language_boost: Chinese, English, Japanese, auto
+  - format: mp3, pcm, flac
+  - sample_rate: 8000, 16000, 22050, 24000, 32000, 44100
+  - english_normalization: true/false

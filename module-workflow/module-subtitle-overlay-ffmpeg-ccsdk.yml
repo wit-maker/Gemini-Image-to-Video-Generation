@@ -15,8 +15,8 @@ on:
         description: '字幕テキスト内容'
         required: true
         type: string
-      subtitle-timing-json:
-        description: '字幕タイミング設定JSON'
+      subtitle-srt-content:
+        description: 'SRT字幕ファイル内容'
         required: true
         type: string
       target-language:
@@ -106,7 +106,7 @@ jobs:
           USER_CONCEPT="${{ inputs.concept }}"
           VIDEO_URL="${{ inputs.video-url }}"
           TEXT_CONTENT="${{ inputs.text-content }}"
-          SUBTITLE_JSON='${{ inputs.subtitle-timing-json }}'
+          SUBTITLE_SRT_CONTENT='${{ inputs.subtitle-srt-content }}'
           TARGET_LANGUAGE="${{ inputs.target-language }}"
           FOLDER_NAME="${{ inputs.folder-name }}"
           SUBTITLE_DIR="$FOLDER_NAME/subtitle-overlay-${{ inputs.video_index }}"
@@ -121,27 +121,25 @@ jobs:
           # 字幕オーバーレイディレクトリを作成
           mkdir -p "$SUBTITLE_DIR"
           
-          # 字幕タイミングJSONをファイルに保存
-          echo "$SUBTITLE_JSON" > "$SUBTITLE_DIR/subtitle-timing.json"
+          # SRT字幕データをファイルに保存（base64デコード）
+          echo "$SUBTITLE_SRT_CONTENT" | base64 -d > "$SUBTITLE_DIR/subtitle.srt"
           
           # プロンプトの構築
           PROMPT="あなたはffmpegを使用した動画字幕オーバーレイの専門エージェントです。リップシンク動画に字幕を挿入してください。
 
           **入力情報**:
           - **動画URL**: $VIDEO_URL
-          - **字幕テキスト**: \"$TEXT_CONTENT\"
+          - **SRT字幕データ**: 受け取ったSRT形式の字幕内容
           - **字幕言語**: $TARGET_LANGUAGE
-          - **字幕タイミング設定**: $SUBTITLE_DIR/subtitle-timing.json (既に作成済み)
           - **出力ディレクトリ**: $SUBTITLE_DIR
 
           **重要**: 動画URLが空または\"undefined\"の場合は、エラーを報告してください
 
           **実行手順**:
 
-          1. **字幕タイミングJSON解析**:
-             - $SUBTITLE_DIR/subtitle-timing.json を読み込む
-             - 各字幕セグメントの開始時刻、終了時刻、テキストを抽出
-             - フォント設定とスタイル情報を確認
+          1. **SRT字幕ファイルの作成**:
+             - 受け取ったSRT字幕データを $SUBTITLE_DIR/subtitle.srt に保存
+             - SRT形式の妥当性を確認
 
           2. **動画ダウンロード**:
              ```bash
@@ -160,30 +158,23 @@ jobs:
              fc-list | grep -i \"$TARGET_LANGUAGE == 'japanese' && 'noto\\|cjk' || 'liberation\\|arial'\"
              ```
 
-          4. **字幕ファイル生成**:
-             字幕タイミングJSONから、ffmpeg用の字幕コマンドを生成:
+          4. **ffmpeg字幕オーバーレイ実行**:
+             SRTファイルを使用してffmpegで字幕を埋め込み:
              ```bash
-             # 例: drawtext フィルタ用のコマンド生成
-             # 複数の字幕セグメントを enable パラメータで制御
-             ```
-
-          5. **ffmpeg字幕オーバーレイ実行**:
-             以下の要件でffmpegコマンドを実行:
-             - 字幕の位置: 画面下部中央 (x=(w-text_w)/2:y=h-100)
-             - 文字色: 白 (fontcolor=white)
-             - 背景: 半透明黒 (box=1:boxcolor=black@0.7)
-             - フェードイン/アウト効果
-             - 複数字幕セグメントの時間制御
-
-             ```bash
-             # 基本的なffmpegコマンド例:
+             # SRTファイルを使用した字幕オーバーレイ
+             # FontSize=24: 適切な可読性を確保（大きすぎない）
+             # MarginV=50: 画面下から50ピクセル上に配置
+             # Alignment=2: 下部中央配置
+             # PrimaryColour=&Hffffff: 白文字
+             # BackColour=&H80000000: 半透明黒背景
+             # Outline=2,OutlineColour=&H000000: 黒い縁取り2px
              ffmpeg -i input-video.mp4 \\
-               -vf \"drawtext=fontfile=/path/to/font:text='字幕テキスト':fontsize=24:fontcolor=white:box=1:boxcolor=black@0.7:x=(w-text_w)/2:y=h-100:enable='between(t,開始時刻,終了時刻)'\" \\
+               -vf \"subtitles=subtitle.srt:force_style='FontSize=24,PrimaryColour=&Hffffff,BackColour=&H80000000,Outline=2,OutlineColour=&H000000,Alignment=2,MarginV=50'\" \\
                -c:a copy \\
                video.mp4
              ```
 
-          6. **品質確認**:
+          5. **品質確認**:
              ```bash
              # 出力動画の確認
              ffprobe video.mp4
@@ -192,20 +183,24 @@ jobs:
              ls -lh video.mp4
              
              # メタデータの保存
-             echo \"字幕付き動画生成完了\" > subtitle-overlay-log.txt
+             echo \"SRT字幕付き動画生成完了\" > subtitle-overlay-log.txt
              ```
 
           **重要な技術ポイント**:
-          - 複数字幕セグメントは複数のdrawtextフィルタまたは一つのフィルタでenable条件を使用
+          - SRTファイルを直接ffmpegのsubtitlesフィルターで処理
           - 日本語フォントが正しく読み込まれることを確認
-          - 動画の解像度に応じてフォントサイズを調整
-          - 字幕が動画の重要部分を隠さないよう配置
+          - **字幕サイズ**: FontSize=24で適切な可読性を確保（大きすぎない）
+          - **字幕位置**: 画面下部中央、下から50ピクセル上に配置（Alignment=2, MarginV=50）
+          - **視認性向上**: 白文字、半透明黒背景、黒い縁取り2pxで視認性を最大化
           - 音声ストリームはそのまま保持 (-c:a copy)
+          - **標準的なSRT処理**: ffmpegの標準字幕処理機能を活用
 
           **エラー処理**:
           - 動画ダウンロードエラーの処理
+          - SRTファイル形式エラーの処理
           - フォント読み込みエラーの処理
           - ffmpeg実行エラーの処理
+          
           **出力要求**:
           1. 字幕付き動画ファイル (video.mp4) - 直接このファイル名で出力すること
           2. 処理ログ (subtitle-overlay-log.txt)"

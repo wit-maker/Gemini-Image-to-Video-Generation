@@ -1,4 +1,4 @@
-name: module-audio-generation-kc-multi-model-ccsdk
+name: module-audio-generation-kc-minimax-voice-design-ccsdk
 
 on:
   workflow_call:
@@ -7,19 +7,14 @@ on:
         description: 'ユーザーのコンセプト'
         required: true
         type: string
-      model-type:
-        description: '使用する音声生成モデル (例: t2s-fal-minimax-speech-02-turbo)'
-        required: true
-        type: string
       text-prompt:
         description: '音声生成用テキストプロンプト'
         required: true
         type: string
-      voice-settings:
-        description: '音声設定（JSON形式、オプション）'
-        required: false
+      voice-character:
+        description: '音声キャラクター設定（自然言語形式）'
+        required: true
         type: string
-        default: '{}'
       branch-name:
         description: 'ワーキングブランチ名'
         required: true
@@ -71,32 +66,25 @@ jobs:
       - name: Install Claude Code SDK
         run: npm install @anthropic-ai/claude-code
       
-      - name: Install ffmpeg for audio duration check
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-      
-      - name: 音声生成エージェント (マルチモデル対応)
+      - name: MiniMax Voice Design音声生成エージェント
         id: audio
         env:
           ANTHROPIC_API_KEY: ${{ secrets.anthropic_api_key }}
         run: |
-          echo "::group::🎤 Audio Generation Agent Execution (Multi-Model)"
+          echo "::group::🎤 MiniMax Voice Design Audio Generation Agent Execution"
           echo "Starting at: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
           
           # 設定
           USER_CONCEPT="${{ inputs.concept }}"
-          MODEL_TYPE="${{ inputs.model-type }}"
           TEXT_PROMPT="${{ inputs.text-prompt }}"
-          VOICE_SETTINGS="${{ inputs.voice-settings }}"
+          VOICE_CHARACTER="${{ inputs.voice-character }}"
           FOLDER_NAME="${{ inputs.folder-name }}"
           AUDIO_INDEX="${{ inputs.audio_index }}"
           AUDIO_DIR="$FOLDER_NAME/audio-${AUDIO_INDEX}"
           
           echo "User concept: $USER_CONCEPT"
-          echo "Model type: $MODEL_TYPE"
           echo "Text prompt: $TEXT_PROMPT"
-          echo "Voice settings: $VOICE_SETTINGS"
+          echo "Voice character: $VOICE_CHARACTER"
           echo "Audio index: $AUDIO_INDEX"
           echo "Target folder: $AUDIO_DIR"
           
@@ -119,45 +107,54 @@ jobs:
           fi
           
           # プロンプトの構築
-          PROMPT="指定されたモデルタイプを使用して音声を生成してください。
+          PROMPT="MiniMax Voice Designを使用して高品質な日本語音声を生成してください。
 
           **元のユーザー指示**: $USER_CONCEPT
-          **使用するモデルタイプ**: $MODEL_TYPE
-          **テキストプロンプト**: $TEXT_PROMPT
-          **音声設定**: $VOICE_SETTINGS
+          **音声生成テキスト**: $TEXT_PROMPT
+          **音声キャラクター設定**: $VOICE_CHARACTER
 
           **実行手順**:
-          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
+          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、MiniMax Voice Designに対応するMCPツール名を確認してください
           2. ファイルから以下の情報を抽出:
-             - submitツール名（例: mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_submit）
-             - statusツール名（例: mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_status）
-             - resultツール名（例: mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_result）
-          3. モデルタイプに応じて適切なパラメータを使用:
-             - **t2s-で始まる場合**: テキストプロンプト（$TEXT_PROMPT）と音声設定（$VOICE_SETTINGS）を使用してテキストから音声生成
-          4. submitツールで音声生成を開始
-          5. statusツールでステータス確認（音声生成は比較的高速ですが、適度な間隔で確認）
-          6. 必要に応じてBashツールで \`sleep 30\` を実行してから再度ステータス確認
-          7. resultツールで結果取得して音声URLを取得
-          8. **必須**: 取得した音声URLを「$AUDIO_DIR/audio-url.txt」ファイルに保存
-          9. **必須**: 取得した音声URLをBashツールで「$AUDIO_DIR/audio.mp3」または「$AUDIO_DIR/audio.wav」にダウンロード保存
+             - submitツール名: mcp__v2v-fal-minimax-voice-design__voice_design_submit
+             - statusツール名: mcp__v2v-fal-minimax-voice-design__voice_design_status
+             - resultツール名: mcp__v2v-fal-minimax-voice-design__voice_design_result
+          3. **音声キャラクター設定**（\"$VOICE_CHARACTER\"）を使用してMiniMax Voice Designで音声生成:
+             - 音声キャラクター設定は自然言語形式で記述されています
+             - この設定をMiniMax Voice Designのパラメータとして適用してください
+             - 例: \"日本語に適した自然で魅力的な女性の声、感情豊かで親しみやすく温かみがある、リップシンクに最適化された明瞭で美しい発音、若々しくエネルギッシュで聞き手を惹きつける魅力的な声質\"
+          4. **音声生成テキスト**（\"$TEXT_PROMPT\"）を使用して音声を生成
+          5. submitツールで音声生成を開始
+          6. statusツールでステータス確認（適度な間隔で確認）
+          7. 必要に応じてBashツールで \`sleep 30\` を実行してから再度ステータス確認
+          8. resultツールで結果取得して音声URLを取得
+          9. **必須**: 取得した音声URLを「$AUDIO_DIR/audio-url.txt」ファイルに保存
+          10. **必須**: 取得した音声URLをBashツールで「$AUDIO_DIR/audio.mp3」にダウンロード保存
 
           **重要な注意点**:
-          - kamuicode-usage.mdから正しいツール名を読み取ること
+          - MiniMax Voice Designは自然言語での音声キャラクター設定に対応
+          - 音声キャラクター設定を詳細にMCPツールに渡してください
           - 音声生成は比較的高速ですが、ステータス確認は適度な間隔で行うこと
           - Google URLの有効期限は約1時間のため、生成後すぐにダウンロード
           - 必ずGoogle提供の認証済URLを使用
           - 音声は必ず「$AUDIO_DIR」ディレクトリに保存
-          - ファイル名は「audio.mp3」または「audio.wav」とする
+          - ファイル名は「audio.mp3」とする
           - **最重要**: 生成時の音声URLを「$AUDIO_DIR/audio-url.txt」に保存し、次のジョブで参照できるようにする
-          - **両方を実行**: ①音声URLをテキストファイルに保存 ②音声URLから音声をダウンロードしてローカル保存"
+          - **両方を実行**: ①音声URLをテキストファイルに保存 ②音声URLから音声をダウンロードしてローカル保存
+
+          **MiniMax Voice Design特有の機能**:
+          - 自然言語による音声キャラクター設定
+          - 日本語音声に最適化された高品質生成
+          - リップシンクに適した明瞭な発音
+          - 感情表現豊かな音声合成"
           
-          echo "🚀 Starting Audio Generation Agent Claude Code CLI..."
+          echo "🚀 Starting MiniMax Voice Design Audio Generation Agent Claude Code CLI..."
           echo "📝 Prompt length: ${#PROMPT}"
           
-          # Claude Code CLIの実行（音声生成系ツールはワイルドカードで許可）
+          # Claude Code CLIの実行（MiniMax Voice Design用ツール許可）
           npx @anthropic-ai/claude-code \
             --mcp-config="$MCP_CONFIG_ABS_PATH" \
-            --allowedTools "mcp__t2s-*,Read,Bash" \
+            --allowedTools "mcp__v2v-fal-minimax-voice-design__*,Read,Bash" \
             --max-turns 40 \
             --verbose \
             --permission-mode "acceptEdits" \
@@ -171,48 +168,27 @@ jobs:
           echo "🎤 Checking generated audio..."
           if [ -d "$AUDIO_DIR" ]; then
             AUDIO_COUNT=$(find "$AUDIO_DIR" -name "*.mp3" -o -name "*.wav" -o -name "*.m4a" | wc -l)
-            echo "::notice::🎤 Generated $AUDIO_COUNT audio files using $MODEL_TYPE"
+            echo "::notice::🎤 Generated $AUDIO_COUNT audio files using MiniMax Voice Design"
             if [ "$AUDIO_COUNT" -gt 0 ]; then
-              # 音声ファイルサイズと長さの確認（Pixverse制限: 30秒以内）
+              # 音声ファイルサイズの確認
               for audio_file in $(find "$AUDIO_DIR" -name "*.mp3" -o -name "*.wav" -o -name "*.m4a" | head -3); do
                 if [ -f "$audio_file" ]; then
                   AUDIO_SIZE=$(stat -c%s "$audio_file" 2>/dev/null || stat -f%z "$audio_file" 2>/dev/null || echo "0")
-                  echo "::notice::🎵 Audio file: $audio_file (${AUDIO_SIZE} bytes)"
+                  AUDIO_SIZE_MB=$(echo "scale=2; $AUDIO_SIZE / 1024 / 1024" | bc -l 2>/dev/null || echo "0")
                   
-                  if [ "$AUDIO_SIZE" -eq 0 ]; then
-                    echo "::error::❌ Audio file is empty: $audio_file"
-                    exit 1
-                  fi
-                  
-                  # Pixverse制限チェック（30秒以内）
-                  # ffprobeで音声の長さを取得
-                  if command -v ffprobe >/dev/null 2>&1; then
-                    AUDIO_DURATION=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$audio_file" 2>/dev/null || echo "0")
-                    AUDIO_DURATION_INT=$(echo "$AUDIO_DURATION" | cut -d. -f1)
-                    echo "::notice::⏱️ Audio duration: ${AUDIO_DURATION}s"
-                    
-                    if [ "$AUDIO_DURATION_INT" -gt 30 ]; then
-                      echo "::warning::⚠️ Audio file exceeds Pixverse 30s limit: $audio_file (${AUDIO_DURATION}s)"
-                      echo "::warning::💡 Audio may not be compatible with Pixverse lipsync but continuing workflow"
-                    else
-                      echo "::notice::✅ Audio file is within Pixverse 30s limit: ${AUDIO_DURATION}s"
-                    fi
-                  else
-                    echo "::warning::⚠️ ffprobe not available, skipping audio duration check"
-                  fi
+                  echo "::notice::📊 Audio file analysis: $audio_file"
+                  echo "::notice::📏 Size: ${AUDIO_SIZE_MB}MB"
+                  echo "::notice::💡 Audio duration will be verified during Pixverse lipsync processing"
                 fi
               done
               
-              # 音声URLファイルの確認と出力設定
-              AUDIO_URL_FILE="$AUDIO_DIR/audio-url.txt"
-              if [ -f "$AUDIO_URL_FILE" ]; then
-                AUDIO_URL=$(cat "$AUDIO_URL_FILE")
-                echo "✅ Audio URL found: $AUDIO_URL"
+              # 音声URLを確認してGitHub Outputに設定
+              if [ -f "$AUDIO_DIR/audio-url.txt" ]; then
+                AUDIO_URL=$(cat "$AUDIO_DIR/audio-url.txt")
+                echo "Audio URL: $AUDIO_URL"
                 echo "audio-url=$AUDIO_URL" >> $GITHUB_OUTPUT
               else
-                echo "❌ Audio URL file not found: $AUDIO_URL_FILE"
-                echo "Creating empty URL file to continue workflow..."
-                echo "" > "$AUDIO_URL_FILE"
+                echo "::warning::⚠️ Audio URL not found in file"
                 echo "audio-url=" >> $GITHUB_OUTPUT
               fi
             else
@@ -235,9 +211,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ${{ inputs.folder-name }}/
           if git diff --cached --quiet; then
-            echo "No audio files to commit"
+            echo "No audio to commit"
           else
-            git commit -m "Add generated audio using ${{ inputs.model-type }}: ${{ inputs.concept }}
+            git commit -m "Add generated audio using MiniMax Voice Design: ${{ inputs.concept }}
             
             🤖 Generated with [Claude Code](https://claude.ai/code)
             

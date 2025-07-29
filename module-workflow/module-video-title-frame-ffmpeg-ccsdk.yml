@@ -250,9 +250,8 @@ jobs:
           
           # Claude Code CLIの実行
           npx @anthropic-ai/claude-code \
-            --max-turns 40 \
+            --max-turns 60 \
             --verbose \
-            --permission-mode "acceptEdits" \
             -p "$PROMPT" || {
               echo "::error::❌ Claude Code CLI execution failed"
               exit 1

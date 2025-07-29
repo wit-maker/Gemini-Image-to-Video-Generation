@@ -1,3 +1,194 @@
+# 🚀 Advanced Workflow Integration System Release
+
+**Version:** v0.5.0-advanced-workflow  
+**Release Date:** 2025-07-28  
+**Commit:** 0fe70cb836943a8890181294ffed8719cf45c4b1
+
+## 🌟 新機能
+
+### 🎯 高度なワークフロー統合システム
+音声生成、リップシンク動画分析、動画生成、字幕オーバーレイ、動画結合、FALアップロードなどの機能を統合した包括的なワークフローシステムを追加しました。各モジュールはユーザーのコンセプトに基づいて動作し、GitHub Actionsを通じて自動化されたプロセスを提供します。
+
+#### 新しいモジュール（7個追加、計1,631行）
+
+- **`module-audio-generation-kc-minimax-voice-design-ccsdk.yml`** - MiniMax Voice Design音声生成モジュール（233行）
+  - 自然言語による音声キャラクター設定対応
+  - 日本語音声に最適化された高品質生成
+  - リップシンクに適した明瞭な発音
+  - 感情表現豊かな音声合成
+  - **依存ファイル**: `kamuicode-usage.md`（モデル情報管理）
+
+- **`module-lipsync-video-analysis-ccsdk.yml`** - Claude Code版リップシンク動画解析モジュール（296行）
+  - 音声ファイルの実際の音声波形解析
+  - 日本語文法に基づく適切なセグメント分割
+  - SRT形式字幕ファイル自動生成
+  - 品質チェックと自動修正機能
+  - ffmpeg活用の高精度タイミング分析
+
+- **`module-planning-pixverse-lipsync-ccsdk.yml`** - Pixverseリップシンク企画モジュール（509行）
+  - Pixverseの厳格な制限（5MB動画/30秒音声）対応
+  - 事前チェック機能付き企画立案
+  - 制限内最適化された処理フロー
+  - セグメント分割・品質制御
+
+- **`module-subtitle-overlay-ffmpeg-ccsdk.yml`** - FFmpeg字幕オーバーレイモジュール（61行改良）
+  - SRT字幕ファイル対応の高度化
+  - 日本語・英語字幕の正確な表示
+  - タイミング設定に基づく精密な字幕同期
+  - ffmpeg統合によるプロ品質字幕処理
+
+- **`module-upload-fal-ccsdk.yml`** - FALアップロードモジュール（246行）
+  - ローカルファイルの自動FAL URL変換
+  - 動画・画像・音声ファイル対応
+  - アップロード進捗管理
+  - エラーハンドリング・リトライ機能
+
+- **`module-video-concatenation-ffmpeg-ccsdk.yml`** - FFmpeg動画結合モジュール（295行）
+  - 複数動画の高品質結合
+  - 解像度・フレームレート統一処理
+  - 音声同期保持
+  - プロフェッショナル品質の動画編集
+
+- **`module-video-analysis-ccsdk.yml`** - 動画解析モジュール（改良版）
+  - 旧GCA版からClaude Code SDK版への完全移行
+  - 動画メタデータ詳細分析
+  - 品質評価・最適化提案
+  - **ファイル更新**: 旧`module-video-analysis-gca.yml`から移行（76行の変更）
+
+#### 新しいオーケストレータ（3個追加）
+
+- **`orchestrator-i2v-fal-upload-test.yml`** - I2V FALアップロードテストオーケストレータ（109行）
+  - 画像→動画生成とFALアップロード統合テスト
+  - アップロード機能の動作確認
+  - 生成・アップロード・検証の完全パイプライン
+
+- **`orchestrator-i2v-generation-analysis-ccsdk.yml`** - I2V生成・解析統合オーケストレータ
+  - 画像→動画生成と動画解析の統合ワークフロー
+  - 旧GCA版からClaude Code SDK版への移行（18行の変更）
+  - 生成品質の自動評価機能
+
+- **`orchestrator-v2v-pixverse-lipsync-single.yml`** - Pixverseリップシンク単体オーケストレータ（125行）
+  - Pixverseリップシンク専用の最適化された処理
+  - 制限チェック・品質制御統合
+  - 単体処理による高速化・安定化
+
+## 📚 ドキュメント大幅拡張
+
+### kamuicode-usage.md機能拡張（90行追加）
+
+#### 新モデル対応
+- **Pixverse Lipsync**: 制限厳格（5MB/30秒）だが高品質リップシンク
+- **MiniMax Voice Design**: プロ品質音声・キャラクター音声対応
+
+#### 新ツール追加
+- `mcp__v2v-fal-pixverse-lipsync__*` - Pixverseリップシンク生成ツール群
+- `mcp__v2v-fal-minimax-voice-design__*` - MiniMax Voice Design音声生成ツール群
+- `mcp__t2i-google-imagen3__imagen_t2i` - Google Imagen3一括実行ツール
+
+#### 詳細な使用ガイド追加
+- **Pixverseリップシンクの正しい手順**: 制限事項・事前チェック・実行手順を詳細化
+- **MiniMax Speech-02 Turbo音声オプション**: 17種類の音声ID、感情設定、品質設定の完全ガイド
+
+## 🔧 技術的改善
+
+### Claude Code SDK統合強化
+- **GCAからCCSK移行**: より安定したClaude Code SDK基盤への移行
+- **統合処理**: 複数のAIサービスをシームレスに連携
+- **エラーハンドリング**: 堅牢な例外処理・リトライ機能
+
+### FFmpeg活用の高度化
+- **字幕オーバーレイ**: SRT字幕の高精度表示
+- **動画結合**: 複数動画の品質保持結合
+- **音声解析**: 波形分析による正確なタイミング検出
+
+### 制限対応機能
+- **Pixverse制限チェック**: 5MB動画/30秒音声の事前検証
+- **自動最適化**: 制限内での品質最大化
+- **セグメント処理**: 長コンテンツの分割処理
+
+## 🚀 使用方法
+
+### Pixverseリップシンク生成の基本手順
+1. GitHub Actionsの **orchestrator-v2v-pixverse-lipsync-single** を選択
+2. 以下のパラメータを入力：
+   - **concept**: "高品質リップシンク動画生成"
+   - **video-input**: 動画ファイル（5MB以下必須）
+   - **audio-input**: 音声ファイル（30秒以内必須）
+3. **Run workflow** をクリック
+4. 制限チェック→リップシンク生成→品質検証の完全自動化
+5. 約5-10分で高品質リップシンク動画が生成
+
+### MiniMax Voice Design音声生成
+1. GitHub Actionsの対応オーケストレータを選択
+2. 以下の音声設定が可能：
+   - **17種類の音声キャラクター**: Wise_Woman、Friendly_Person等
+   - **感情設定**: happy、sad、angry、neutral等
+   - **品質制御**: 話速・音程・音量の詳細調整
+3. 自然言語での音声キャラクター設定対応
+4. 約2-5分でプロ品質音声が生成
+
+### 生成される成果物
+- MiniMax Voice Design高品質音声
+- Pixverse制限内最適化リップシンク動画
+- SRT字幕ファイル（正確なタイミング同期）
+- FFmpeg結合による統合動画
+- FAL URLアップロード対応ファイル
+- 詳細な制作プロセスドキュメント
+- GitHub PRでの美しい表示
+
+## 🎯 システム規模の拡張
+
+### ワークフロー規模
+- **新規追加**: 1,631行のコード追加（7モジュール＋3オーケストレータ）
+- **既存改良**: 複数モジュールの機能強化・移行
+- **合計ファイル数**: 37個（前回比+10個）
+- **技術統合**: FFmpeg + Claude Code SDK + マルチAIモデル
+
+### 機能の質的向上
+- **制限対応**: Pixverse等の厳格な制限への完全対応
+- **品質制御**: 自動チェック・修正・最適化機能
+- **統合処理**: 音声・動画・字幕の完全統合ワークフロー
+
+## 🔄 互換性
+
+### 既存システムへの影響
+- **完全後方互換性**: 既存のワークフローには影響なし
+- **段階的移行**: GCA版からCCSK版への自然な移行
+- **新機能独立**: 新機能は既存システムと独立動作
+
+### 必要な設定
+- **Anthropic API Key**: Claude Code SDK利用
+- **GitHub PAT Token**: PR作成・リポジトリ操作
+- **FAL_KEY**: FAL APIキー（アカウント作成し、APIキーを取得する）
+- **kamuicode MCP**: 全AI生成サービス統合
+- **ffmpeg**: 動画編集・字幕・音声解析処理
+
+---
+
+## 📋 ファイル変更履歴
+
+### 新規追加 (10ファイル)
+- `module-audio-generation-kc-minimax-voice-design-ccsdk.yml` (233行)
+- `module-lipsync-video-analysis-ccsdk.yml` (296行)
+- `module-planning-pixverse-lipsync-ccsdk.yml` (509行)
+- `module-upload-fal-ccsdk.yml` (246行)
+- `module-video-concatenation-ffmpeg-ccsdk.yml` (295行)
+- `orchestrator-i2v-fal-upload-test.yml` (109行)
+- `orchestrator-v2v-pixverse-lipsync-single.yml` (125行)
+
+### 機能強化・移行 (6ファイル)
+- `kamuicode-usage.md` - 新モデル・ツール情報追加（90行追加）
+- `module-audio-generation-kc-multi-model-ccsdk.yml` - Pixverse制限チェック機能追加（25行変更）
+- `module-subtitle-overlay-ffmpeg-ccsdk.yml` - SRT対応強化（61行改良）
+- `module-video-analysis-ccsdk.yml` - GCA版からの完全移行（76行変更）
+- `orchestrator-i2v-generation-analysis-ccsdk.yml` - CCSK版移行（18行変更）
+- その他既存ファイルの微調整
+
+### ファイル削除・リネーム (1ファイル)
+- `module-lipsync-video-analysis-gca.yml` → `module-lipsync-video-analysis-ccsdk.yml`（GCA版からCCSK版への移行）
+
+---
+
 # 🔧 GitHub Actions Workflow Reliability Enhancement
 
 **Version:** v0.4.0-reliability  

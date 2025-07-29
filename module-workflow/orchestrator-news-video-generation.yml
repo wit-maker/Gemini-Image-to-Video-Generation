@@ -33,7 +33,7 @@ on:
           - t2i-fal-imagen4-fast
           - t2i-fal-flux-schnell
           - t2i-fal-rundiffusion-photo-flux
-        default: t2i-fal-imagen4-fast
+        default: t2i-google-imagen3
       video-model:
         description: '動画生成モデル'
         required: true
@@ -61,7 +61,7 @@ on:
         description: 'カスタム音声設定（JSON形式、空の場合は自動生成）'
         required: false
         type: string
-        default: ''
+        default: '{"voice_id": "Inspirational_girl", "pitch": 1.2, "language_boost": "Japanese", "emotion": "neutral", "speed": 1.0}'
 
 permissions:
   contents: write
@@ -202,17 +202,17 @@ jobs:
   subtitle-analysis:
     needs: [create-branch, planning, audio-generation, lipsync-generation]
     if: always() && needs.lipsync-generation.result == 'success'
-    uses: ./.github/workflows/module-lipsync-video-analysis-gca.yml
+    uses: ./.github/workflows/module-lipsync-video-analysis-ccsdk.yml
     with:
       concept: ${{ inputs.concept }}
-      video-url: ${{ needs.lipsync-generation.outputs.video-url }}
+      audio-url: ${{ needs.audio-generation.outputs.audio-url }}
       text-content: ${{ needs.planning.outputs.audio-prompt-1 }}
       target-language: ${{ inputs.target-language }}
       branch-name: ${{ needs.create-branch.outputs.branch-name }}
       folder-name: ${{ needs.create-branch.outputs.folder-name }}
       video_index: "1"
     secrets:
-      gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
       github_pat: ${{ secrets.PAT_TOKEN }}
 
   # ステップ7: 字幕オーバーレイ
@@ -224,7 +224,7 @@ jobs:
       concept: ${{ inputs.concept }}
       video-url: ${{ needs.lipsync-generation.outputs.video-url }}
       text-content: ${{ needs.planning.outputs.audio-prompt-1 }}
-      subtitle-timing-json: ${{ needs.subtitle-analysis.outputs.subtitle-timing-json }}
+      subtitle-srt-content: ${{ needs.subtitle-analysis.outputs.subtitle-srt-content }}
       target-language: ${{ inputs.target-language }}
       branch-name: ${{ needs.create-branch.outputs.branch-name }}
       folder-name: ${{ needs.create-branch.outputs.folder-name }}

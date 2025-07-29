@@ -1,4 +1,4 @@
-name: Orchestrator - Gemini I2V Generation & Analysis
+name: Orchestrator - I2V Generation & Analysis (CCSDK)
 
 on:
   workflow_dispatch:
@@ -61,7 +61,7 @@ jobs:
 
   analyze-video:
     needs: [setup-branch, planning, generate-image, generate-video]
-    uses: ./.github/workflows/module-video-analysis-gca.yml
+    uses: ./.github/workflows/module-video-analysis-ccsdk.yml
     with:
       concept: ${{ inputs.concept }}
       image-url: ${{ needs.generate-image.outputs.image-url }}
@@ -72,22 +72,12 @@ jobs:
       folder-name: ${{ needs.setup-branch.outputs.folder-name }}
       video_index: '1'
     secrets:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
       gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
       github_pat: ${{ secrets.PAT_TOKEN }}
 
-  create-summary:
-    needs: [setup-branch, generate-video, analyze-video]
-    if: always()
-    uses: ./.github/workflows/module-create-summary.yml
-    with:
-      concept: ${{ inputs.concept }}
-      branch-name: ${{ needs.setup-branch.outputs.branch-name }}
-      folder-name: ${{ needs.setup-branch.outputs.folder-name }}
-    secrets:
-      github_pat: ${{ secrets.PAT_TOKEN }}
-
   create-pull-request:
-    needs: [setup-branch, create-summary]
+    needs: [setup-branch, analyze-video]
     if: always()
     uses: ./.github/workflows/module-create-pr.yml
     with:
