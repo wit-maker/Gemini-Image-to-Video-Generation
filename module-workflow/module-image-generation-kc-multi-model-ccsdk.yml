@@ -114,7 +114,7 @@ jobs:
           **使用するモデルタイプ**: $MODEL_TYPE
 
           **実行手順**:
-          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
+          1. まず、\`.github/workflows/usage/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
           2. ファイルから以下の情報を抽出:
              - モデルの表示名（例: Imagen4 Ultra）
              - submitツール名（例: mcp__t2i-fal-imagen4-ultra__imagen4_ultra_submit）
@@ -128,7 +128,7 @@ jobs:
           8. 取得したGoogle URLをBashツールで「$IMAGES_DIR/image.png」にダウンロード保存
 
           **重要な注意点**:
-          - kamuicode-usage.mdから正しいツール名を読み取ること
+          - usage/kamuicode-usage.mdから正しいツール名を読み取ること
           - Google URLの有効期限は約1時間のため、生成後すぐにダウンロード
           - 必ずGoogle提供の認証済URLを使用
           - 画像は必ず「$IMAGES_DIR」ディレクトリに保存

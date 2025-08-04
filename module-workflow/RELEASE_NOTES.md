@@ -1,3 +1,174 @@
+# 🎯 Banner Autonomous Generation & Workflow Enhancement Release
+
+**Version:** v0.6.0-autonomous-banner  
+**Release Date:** 2025-08-04  
+**Commit:** be24adb87edefec0f6c62572a199837888d7bfea
+
+## 🌟 新機能
+
+### 🎨 自律的バナー生成システム
+評価基準を満たすまで自動的に改善を繰り返すプロフェッショナルなバナー生成システムを追加しました。AI評価による品質保証機能を持つ革新的なワークフローです。
+
+#### 新しいモジュール（2個追加、計765行）
+
+- **`module-banner-autonomous-generation-ccsdk.yml`** - 自律的バナー生成モジュール（518行）
+  - Gemini Vision APIによる厳格な評価システム（1-100点採点）
+  - 70点合格基準による品質保証
+  - 最大5回の自動改善イテレーション
+  - ImageMagick・FFmpeg統合による画像後処理
+  - プロンプト最適化と画像後処理の両方向改善
+  - **依存ファイル**: `banner-evaluation-criteria.md`（評価基準管理）
+
+- **`module-banner-concept-to-prompt-planning.yml`** - バナーコンセプト企画モジュール（247行）
+  - コンセプト→最適化プロンプト変換
+  - 評価基準に基づく戦略的プランニング
+  - ターゲット層・ブランド適合性分析
+  - プロンプト品質向上による成功率アップ
+
+#### 新しいオーケストレータ（1個追加）
+
+- **`orchestrator-banner-autonomous-improvement.yml`** - 自律改善統合オーケストレータ（98行）
+  - コンセプト企画→自律生成→品質保証の完全パイプライン
+  - 企画とAI評価による二重品質チェック
+  - プロフェッショナル品質バナーの自動生成
+
+### 📚 詳細ドキュメント追加（4個追加、計470行）
+
+- **`docs/banner-evaluation-criteria.md`** - バナー評価基準詳細仕様（148行）
+  - 技術品質・デザイン品質・商用価値の詳細採点基準
+  - 70点合格基準と必須項目（テキスト可読性6点以上、ブランド適合性5点以上）
+  - 改善トリガーと具体的対策
+  - Gemini API評価指示の厳格遵守ガイド
+
+- **`docs/community-service-guide.md`** - コミュニティサービス案内バナー仕様（137行）
+  - 地域コミュニティサポートサービスの詳細設計
+  - ターゲット層・ブランドイメージ・デザイン要件
+  - 温かさ・信頼性・身近さを重視した設計指針
+
+- **`docs/premium-product-launch.md`** - プレミアム商品ローンチキャンペーン仕様（118行）
+  - 高級スマートウォッチ「LUXE Pro」のマーケティング戦略
+  - Ultra Premium・Exclusive・Innovation・Craftsmanshipの価値訴求
+  - 限定性・ステータス・品質を重視した戦略的アプローチ
+
+- **`docs/summer-sale-campaign.md`** - 夏のセールキャンペーン仕様（67行）
+  - 季節感を活かした家電セールの訴求戦略
+  - 涼しさ・快適性・コスパを重視したメッセージング
+
+### 🔧 画像処理機能拡張（2個追加、計1,026行）
+
+- **`usage/ffmpeg-usage.md`** - FFmpeg詳細使用ガイド（584行）
+  - 色調補正・明度・コントラスト・ガンマ補正の詳細手順
+  - ノイズ除去・シャープネス・品質向上処理
+  - バナー品質最適化のための包括的コマンドリファレンス
+
+- **`usage/imagemagick-usage.md`** - ImageMagick詳細使用ガイド（442行）
+  - 包括的な画像処理・加工機能の詳細説明
+  - フィルター・エフェクト・変換処理の実践的活用法
+  - AI生成画像の品質向上のための高度技術
+
+## 🔧 技術的改善
+
+### GitHub Actionsワークフロー修正
+- **ファイルパス修正**: `kamuicode/kamuicode-usage.md` → `usage/kamuicode-usage.md`への統一（14ファイル）
+- **正しいツール名参照**: MCPツール名の整合性確保
+- **構成の一元化**: usageディレクトリへの統合による管理性向上
+
+### kamuicode-usage.md機能拡張（50行追加）
+- **ファイル配置変更**: `.github/workflows/usage/`へ移動
+- **新機能追加**: 動画分析モデル・音声生成オプションの詳細化
+- **使用方法改善**: より具体的な使用例とパラメータ説明
+
+### ワークフロー更新対象（14ファイル）
+- `module-audio-generation-kc-minimax-voice-design-ccsdk.yml`
+- `module-audio-generation-kc-multi-model-ccsdk.yml`
+- `module-banner-planning-ccsdk.yml`
+- `module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml`
+- `module-image-generation-kc-multi-model-ccsdk.yml`
+- `module-lipsync-generation-kc-multi-model-ccsdk.yml` 
+- `module-planning-ccsdk.yml`
+- `module-video-generation-kc-multi-model-ccsdk.yml`
+- `orchestrator-banner-advertisement-creation.yml`
+- `orchestrator-news-video-generation.yml`
+- その他関連モジュール
+
+## 🚀 使用方法
+
+### 自律的バナー生成の基本手順
+1. GitHub Actionsの **orchestrator-banner-autonomous-improvement** を選択
+2. 以下のパラメータを入力：
+   - **concept**: "地域コミュニティサポートサービス案内"
+   - **text_content**: "つながる！安心サポート"
+   - **banner_size**: "square_1_1"
+   - **max_iterations**: "5"
+3. **Run workflow** をクリック
+4. コンセプト企画→自律生成→品質評価→自動改善の完全自動化
+5. 約20-30分で70点以上の品質保証されたプロフェッショナルバナーが生成
+
+### 新しい品質保証システム
+- **Gemini Vision API評価**: 技術品質30点・デザイン品質40点・商用価値30点の詳細採点
+- **自動改善機能**: 評価結果に基づくプロンプト調整・画像後処理の自動実行
+- **品質基準遵守**: 70点未満は自動的に改善処理、必須項目チェック機能
+- **イテレーション記録**: 各改善回の詳細履歴とGitHub Actions Summary表示
+
+### 生成される成果物
+- 品質保証済み最終バナー（70点以上）
+- 最適化された画像プロンプト・テキストオーバーレイプロンプト
+- 詳細な評価履歴・改善プロセス記録
+- イテレーション別バナー比較
+- プロフェッショナルレベルの制作ドキュメント
+
+## 🎯 システム規模の大幅拡張
+
+### ワークフロー規模
+- **新規追加**: 1,961行のコード追加（3モジュール＋4ドキュメント＋2使用ガイド）
+- **機能強化**: 14ワークフローのパス修正・機能統合
+- **合計ファイル数**: 46個（前回比+9個）
+- **技術統合**: Gemini Vision + ImageMagick + FFmpeg + Claude Code SDK
+
+### 画像品質の革新的向上
+- **AI評価システム**: 人間レベルの厳格な品質評価
+- **二段階品質保証**: 企画段階とAI評価による品質チェック
+- **自動画像後処理**: AI生成だけでは解決できない品質課題への技術的対応
+- **プロフェッショナル基準**: 商用利用可能な70点以上品質の自動達成
+
+## 🔄 互換性
+
+### 既存システムへの影響
+- **完全後方互換性**: 既存のワークフローには影響なし
+- **パス修正による安定化**: ファイル参照の一元化で信頼性向上
+- **新機能独立**: 自律生成機能は既存システムと独立動作
+
+### 必要な設定
+- **Anthropic API Key**: Claude Code SDK利用
+- **Gemini API Key**: 画像評価・品質判定
+- **GitHub PAT Token**: PR作成・リポジトリ操作
+- **kamuicode MCP**: 全AI生成サービス統合
+- **ImageMagick + FFmpeg**: 高度な画像後処理
+
+---
+
+## 📋 ファイル変更履歴
+
+### 新規追加 (9ファイル)
+- `module-banner-autonomous-generation-ccsdk.yml` (518行)
+- `module-banner-concept-to-prompt-planning.yml` (247行)
+- `orchestrator-banner-autonomous-improvement.yml` (98行)
+- `docs/banner-evaluation-criteria.md` (148行)
+- `docs/community-service-guide.md` (137行)
+- `docs/premium-product-launch.md` (118行)
+- `docs/summer-sale-campaign.md` (67行)
+- `usage/ffmpeg-usage.md` (584行)
+- `usage/imagemagick-usage.md` (442行)
+
+### ファイル移動・機能強化 (1ファイル)
+- `kamuicode/kamuicode-usage.md` → `usage/kamuicode-usage.md` (50行追加)
+
+### ワークフロー修正 (14ファイル)
+- パス修正: `kamuicode/kamuicode-usage.md` → `usage/kamuicode-usage.md`
+- 全モジュールワークフローの整合性確保・信頼性向上
+
+---
+
 # 🚀 Advanced Workflow Integration System Release
 
 **Version:** v0.5.0-advanced-workflow  

@@ -114,7 +114,7 @@ jobs:
           **音声キャラクター設定**: $VOICE_CHARACTER
 
           **実行手順**:
-          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、MiniMax Voice Designに対応するMCPツール名を確認してください
+          1. まず、\`.github/workflows/usage/kamuicode-usage.md\`ファイルを読み込んで、MiniMax Voice Designに対応するMCPツール名を確認してください
           2. ファイルから以下の情報を抽出:
              - submitツール名: mcp__v2v-fal-minimax-voice-design__voice_design_submit
              - statusツール名: mcp__v2v-fal-minimax-voice-design__voice_design_status

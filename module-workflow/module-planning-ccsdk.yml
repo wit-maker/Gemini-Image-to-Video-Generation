@@ -212,14 +212,14 @@ jobs:
           - 動画生成モデル指定: ${VIDEO_MODEL_TYPE:-なし}
           - 指定されたモデルがある場合は、そのモデルの特性に合わせてプロンプトを最適化してください
           - モデル未指定の場合は、汎用的で高品質なプロンプトを作成してください
-          - kamuicode-usage.mdからモデル特性を参照して最適化を行ってください
+          - usage/kamuicode-usage.mdからモデル特性を参照して最適化を行ってください
 
           **重要**: 
           1. 必ず${TOTAL_VIDEOS}個分のファイルを作成してください
           2. txtファイルは機械処理用（1行テキスト）
           3. 各ファイルの内容は具体的で詳細に記述してください
           4. ファイル作成後、必ずファイルパスを確認・報告してください
-          5. モデル指定がある場合は、まず .github/workflows/kamuicode/kamuicode-usage.mdを読み込んで特性を理解してください"
+          5. モデル指定がある場合は、まず .github/workflows/usage/kamuicode-usage.mdを読み込んで特性を理解してください"
           
           echo "🚀 Starting Planning Agent Claude Code CLI..."
           echo "📝 Prompt length: ${#PROMPT}"

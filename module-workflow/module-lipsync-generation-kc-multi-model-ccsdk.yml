@@ -129,7 +129,7 @@ jobs:
           **リップシンク設定**: $LIPSYNC_SETTINGS
 
           **実行手順**:
-          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
+          1. まず、\`.github/workflows/usage/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
           2. ファイルから以下の情報を抽出:
              - submitツール名（例: mcp__v2v-fal-creatify-lipsync__submit）
              - statusツール名（例: mcp__v2v-fal-creatify-lipsync__status）

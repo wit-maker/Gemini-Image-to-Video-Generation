@@ -13,12 +13,14 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 ### 1. セットアップ
 詳細なセットアップ手順は **[SETUP.md](SETUP.md)** を参照してください。
 
-**🆕 v0.5.0必要な設定:**
+**🆕 v0.6.0必要な設定:**
 - **Anthropic API Key**: Claude Code SDK利用
+- **Gemini API Key**: 画像評価・品質判定🆕
 - **GitHub PAT Token**: PR作成・リポジトリ操作
-- **FAL_KEY**: FAL APIキー（アカウント作成し、APIキーを取得する）🆕
+- **FAL_KEY**: FAL APIキー（アカウント作成し、APIキーを取得する）
 - **kamuicode MCP**: 全AI生成サービス統合
 - **ffmpeg**: 動画編集・字幕・音声解析処理
+- **ImageMagick**: 高度な画像後処理🆕
 
 ### 2. ワークフロー実行
 1. GitHub リポジトリの **Actions** タブを開く
@@ -26,7 +28,7 @@ kamuicode-workflowは、Kamui Codeを活用したClaude Code SDK & Gemini CLI Ac
 3. **Run workflow** をクリック
 4. プロンプトを入力して実行
 
-## 🎭 オーケストレータ（14種類）🆕
+## 🎭 オーケストレータ（15種類）🆕
 
 オーケストレータは複数のモジュールを組み合わせて、特定の目的に最適化されたワークフローを実行します。
 
@@ -346,9 +348,70 @@ graph LR
 - **MiniMax Voice Design**: 高品質日本語音声生成
 - **制限内最適化**: Pixverse専用の最適化された処理フロー
 
-## 🧩 モジュール詳細（33種類）🆕
+### 🆕 13. `orchestrator-banner-autonomous-improvement.yml` **（v0.6.0新機能）**
+**【自律的バナー生成】AI評価による品質保証機能付きバナー生成**
+
+```mermaid
+graph LR
+    A[🚀 Setup<br/>ブランチ・フォルダ作成] --> B[🎯 Concept Planning<br/>コンセプト企画 CCSDK]
+    B --> C[🎨 Autonomous Generation<br/>自律的バナー生成 CCSDK]
+    C --> D[🔍 Gemini Evaluation<br/>品質評価（1-100点）]
+    D --> E{評価結果<br/>70点以上？}
+    E -->|Yes| F[📝 Create PR<br/>プルリクエスト作成]
+    E -->|No| G[⚙️ Auto Improvement<br/>自動改善処理]
+    G --> H[🔄 Regeneration<br/>改善版再生成]
+    H --> D
+    
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style G fill:#ffebee
+    style H fill:#e8f5e8
+```
+
+**特徴:**
+- **AI品質評価**: Gemini Vision APIによる厳格な1-100点採点システム
+- **70点合格基準**: 技術品質・デザイン品質・商用価値の総合評価
+- **自動改善機能**: 評価結果に基づくプロンプト調整・画像後処理の自動実行
+- **最大5回イテレーション**: 品質基準を満たすまで自動的に改善を繰り返し
+- **ImageMagick・FFmpeg統合**: AI生成だけでは解決できない品質課題への技術的対応
+- **プロフェッショナル品質保証**: 商用利用可能な品質の自動達成
+
+## 🧩 モジュール詳細（36種類）🆕
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
+
+### 🆕 自律的バナー生成専門モジュール（v0.6.0新機能）
+
+#### `module-banner-autonomous-generation-ccsdk.yml` 🆕
+**自律的バナー生成**
+```yaml
+AI: Claude Code SDK + Gemini Vision API
+機能: 評価基準を満たすまで自動的に改善を繰り返すバナー生成
+特徴:
+  - Gemini Vision APIによる厳格な評価システム（1-100点採点）
+  - 70点合格基準による品質保証
+  - 最大5回の自動改善イテレーション
+  - ImageMagick・FFmpeg統合による画像後処理
+  - プロンプト最適化と画像後処理の両方向改善
+  - 評価履歴・改善プロセスの詳細記録
+依存: banner-evaluation-criteria.md（評価基準管理）
+出力: 品質保証済み最終バナー、評価履歴、改善プロセス記録
+行数: 518行
+```
+
+#### `module-banner-concept-to-prompt-planning.yml` 🆕
+**バナーコンセプト企画**
+```yaml
+AI: Claude Code SDK
+機能: コンセプト→最適化プロンプト変換
+特徴:
+  - 評価基準に基づく戦略的プランニング
+  - ターゲット層・ブランド適合性分析
+  - プロンプト品質向上による成功率アップ
+  - 技術品質・デザイン品質・商用価値を考慮した企画立案
+出力: 最適化された画像プロンプト、テキストオーバーレイプロンプト
+行数: 247行
+```
 
 ### 🆕 AIニュース記事生成専門モジュール（v0.4.0新機能）
 
@@ -717,11 +780,12 @@ done
 - **自動リベース**: 各試行前の自動同期
 - **95%以上の成功率**: 並列実行時の大幅な安定性向上
 
-### 対象モジュール（全33個）🆕
-v0.5.0で信頼性改善が適用されたモジュール：
-- **v0.5.0新規追加**: 7個の新モジュールにも競合回避システム適用
+### 対象モジュール（全36個）🆕
+v0.6.0で信頼性改善が適用されたモジュール：
+- **v0.6.0新規追加**: 3個の新モジュールにも競合回避システム適用
+- **v0.5.0継続適用**: 7個の新モジュールにも競合回避システム適用
 - **継続適用**: v0.4.0で追加された`module-web-search.yml`, `module-article-creation-ccsdk.yml`
-- **既存全モジュール**: 全33個のワークフローで95%以上の成功率維持
+- **既存全モジュール**: 全36個のワークフローで95%以上の成功率維持
 - **技術移行**: GCA版からCCSDK版への移行でも安定性確保
 
 ## 🏗️ システムアーキテクチャ

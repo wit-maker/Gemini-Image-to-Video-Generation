@@ -127,7 +127,7 @@ jobs:
           **音声設定**: $VOICE_SETTINGS
 
           **実行手順**:
-          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
+          1. まず、\`.github/workflows/usage/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
           2. ファイルから以下の情報を抽出:
              - submitツール名（例: mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_submit）
              - statusツール名（例: mcp__t2s-fal-minimax-speech-02-turbo__minimax_speech_02_turbo_status）
@@ -142,7 +142,7 @@ jobs:
           9. **必須**: 取得した音声URLをBashツールで「$AUDIO_DIR/audio.mp3」または「$AUDIO_DIR/audio.wav」にダウンロード保存
 
           **重要な注意点**:
-          - kamuicode-usage.mdから正しいツール名を読み取ること
+          - usage/kamuicode-usage.mdから正しいツール名を読み取ること
           - 音声生成は比較的高速ですが、ステータス確認は適度な間隔で行うこと
           - Google URLの有効期限は約1時間のため、生成後すぐにダウンロード
           - 必ずGoogle提供の認証済URLを使用

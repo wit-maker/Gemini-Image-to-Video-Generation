@@ -79,7 +79,7 @@ jobs:
       concept: ${{ github.event.inputs.concept }}
       text_content: ${{ github.event.inputs.text_content }}
       image-url: ${{ needs.base-image-generation-1.outputs.image-url }}
-      text-layout-strategy: ${{ needs.planning.outputs.text-layout-strategy-1 }}
+      text-overlay-prompt: ${{ needs.planning.outputs.text-overlay-prompt-1 }}
       branch-name: ${{ needs.setup.outputs.branch-name }}
       folder-name: ${{ needs.setup.outputs.folder-name }}
       banner_index: '1'
@@ -114,7 +114,7 @@ jobs:
       concept: ${{ github.event.inputs.concept }}
       text_content: ${{ github.event.inputs.text_content }}
       image-url: ${{ needs.base-image-generation-2.outputs.image-url }}
-      text-layout-strategy: ${{ needs.planning.outputs.text-layout-strategy-2 }}
+      text-overlay-prompt: ${{ needs.planning.outputs.text-overlay-prompt-2 }}
       branch-name: ${{ needs.setup.outputs.branch-name }}
       folder-name: ${{ needs.setup.outputs.folder-name }}
       banner_index: '2'
@@ -149,7 +149,7 @@ jobs:
       concept: ${{ github.event.inputs.concept }}
       text_content: ${{ github.event.inputs.text_content }}
       image-url: ${{ needs.base-image-generation-3.outputs.image-url }}
-      text-layout-strategy: ${{ needs.planning.outputs.text-layout-strategy-3 }}
+      text-overlay-prompt: ${{ needs.planning.outputs.text-overlay-prompt-3 }}
       branch-name: ${{ needs.setup.outputs.branch-name }}
       folder-name: ${{ needs.setup.outputs.folder-name }}
       banner_index: '3'
@@ -184,7 +184,7 @@ jobs:
       concept: ${{ github.event.inputs.concept }}
       text_content: ${{ github.event.inputs.text_content }}
       image-url: ${{ needs.base-image-generation-4.outputs.image-url }}
-      text-layout-strategy: ${{ needs.planning.outputs.text-layout-strategy-4 }}
+      text-overlay-prompt: ${{ needs.planning.outputs.text-overlay-prompt-4 }}
       branch-name: ${{ needs.setup.outputs.branch-name }}
       folder-name: ${{ needs.setup.outputs.folder-name }}
       banner_index: '4'

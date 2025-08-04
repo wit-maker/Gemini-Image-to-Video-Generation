@@ -1,0 +1,98 @@
+name: orchestrator-banner-autonomous-improvement
+
+on:
+  workflow_dispatch:
+    inputs:
+      concept:
+        description: 'バナーのコンセプト（従来方式）'
+        required: false
+        type: string
+      concept_file:
+        description: 'コンセプトファイル名（新方式、拡張子なし、例：summer-sale-campaign）'
+        required: false
+        type: string
+      text_content:
+        description: '画像に表示するテキスト（英語、数字）'
+        required: true
+        type: string
+      banner_size:
+        description: 'バナーサイズ'
+        required: false
+        type: choice
+        default: 'square_1_1'
+        options:
+          - 'square_1_1'
+          - 'landscape_16_9'
+          - 'portrait_9_16'
+      input_mode:
+        description: '入力モード'
+        required: false
+        type: choice
+        default: 'prompt_only'
+        options:
+          - 'prompt_only'      # MDファイルのみ
+          - 'with_image'       # MDファイル＋画像ファイル
+
+jobs:
+  # Phase 1: ブランチとフォルダのセットアップ
+  setup:
+    permissions:
+      contents: write
+    uses: ./.github/workflows/module-setup-branch.yml
+    with:
+      concept: ${{ github.event.inputs.concept_file || github.event.inputs.concept }}
+      project_prefix: 'banner-auto'
+
+  # Phase 2: コンセプト→プロンプト変換プランニング
+  planning:
+    needs: setup
+    permissions:
+      contents: write
+    uses: ./.github/workflows/module-banner-concept-to-prompt-planning.yml
+    with:
+      concept: ${{ github.event.inputs.concept }}
+      concept_file: ${{ github.event.inputs.concept_file }}
+      text_content: ${{ github.event.inputs.text_content }}
+      banner_size: ${{ github.event.inputs.banner_size }}
+      input_mode: ${{ github.event.inputs.input_mode }}
+      branch-name: ${{ needs.setup.outputs.branch-name }}
+      folder-name: ${{ needs.setup.outputs.folder-name }}
+    secrets:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+      github_pat: ${{ secrets.PAT_TOKEN }}
+
+  # Phase 3: 自律修正バナー生成（プランニング結果を使用）
+  autonomous-generation:
+    needs: [setup, planning]
+    permissions:
+      contents: write
+    uses: ./.github/workflows/module-banner-autonomous-generation-ccsdk.yml
+    with:
+      image-prompt: ${{ needs.planning.outputs.image-prompt }}
+      concept: ${{ needs.planning.outputs.concept }}
+      text-overlay-prompt: ${{ needs.planning.outputs.text-overlay-prompt }}
+      text_content: ${{ github.event.inputs.text_content }}
+      banner_size: ${{ github.event.inputs.banner_size }}
+      input_mode: ${{ github.event.inputs.input_mode }}
+      branch-name: ${{ needs.setup.outputs.branch-name }}
+      folder-name: ${{ needs.setup.outputs.folder-name }}
+    secrets:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+      gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+      github_pat: ${{ secrets.PAT_TOKEN }}
+
+  # Phase 4: プルリクエスト作成
+  create-pr:
+    needs: [setup, planning, autonomous-generation]
+    if: always() && needs.autonomous-generation.result == 'success'
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+    uses: ./.github/workflows/module-create-pr.yml
+    with:
+      concept: ${{ github.event.inputs.concept_file || github.event.inputs.concept }}
+      branch-name: ${{ needs.setup.outputs.branch-name }}
+      folder-name: ${{ needs.setup.outputs.folder-name }}
+    secrets:
+      github_pat: ${{ secrets.PAT_TOKEN }}

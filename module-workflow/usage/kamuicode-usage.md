@@ -1,5 +1,10 @@
 # kamuicode使用方法
 
+## claude codeにmcpとして認識させる方法
+
+claude --mcp-config='.claude/mcp-kamuicode.json'
+で、claude codeを起動
+
 ## 使用方法
 ```bash
 claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imagen4-fast__imagen4_fast_submit,mcp__t2i-fal-imagen4-fast__imagen4_fast_status,mcp__t2i-fal-imagen4-fast__imagen4_fast_result,Bash" -p "プロンプト"
@@ -25,6 +30,17 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 | Vidu Q1 | 参照動画からの生成 | 中速 | 720p/4秒 | スタイル模倣 |
 | Creatify Lipsync | リアルなリップシンク動画 | 高速 | 元動画依存 | トーキングヘッド・プレゼン動画 |
 | Pixverse Lipsync | Pixverseリップシンク特化、制限厳格 | 中速 | 制限：5MB/30秒 | 高品質リップシンク（制限内） |
+| Pixverse Extend | 動画拡張・強化、品質向上 | 中速 | 元動画依存 | 動画の時間延長・品質改善 |
+| ByteDance Seedance V1 Lite | 軽量版画像から動画生成 | 高速 | 720p/4秒 | 軽量・高速生成 |
+| WAN v2.2-a14b T2V | 高品質テキストから動画 | 中速 | 1080p/6秒 | 高品質・モーション豊富 |
+| WAN v2.2-a14b I2V | 高品質画像から動画 | 中速 | 1080p/6秒 | 高品質・モーション豊富 |
+| ByteDance OmniHuman | 人物特化リップシンク・表情 | 中速 | 1080p/可変 | 人物動画・リップシンク |
+| Topaz Video AI | 動画アップスケール・補間 | 遅い | 最大4K | 動画品質向上・フレーム補間 |
+
+### 動画分析モデル
+| モデル名 | 特徴 | 処理速度 | 対応言語 | 用途 |
+|---------|------|----------|----------|------|
+| Google Gemini 2.5-flash Video Analysis | 動画内容の詳細分析・説明生成 | 高速 | 日本語・英語 | 動画コンテンツ分析・キャプション生成 |
 
 ### その他のモデル
 | モデル名 | 特徴 | 生成速度 | 出力形式 | 用途 |
@@ -40,6 +56,12 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 | Flux Kontext Trainer | LoRAモデル訓練 | 遅い | LoRA | カスタムモデル作成 |
 
 ## 利用可能ツール
+### 動画分析
+- `mcp__video-analysis-google-gemini__analyze_video` - Google Gemini 2.5-flash 動画分析（一括実行）
+- `mcp__video-analysis-google-gemini__analyze_video_submit` - 動画分析開始
+- `mcp__video-analysis-google-gemini__analyze_video_status` - 分析ステータス確認
+- `mcp__video-analysis-google-gemini__analyze_video_result` - 分析結果取得
+
 ### 画像生成
 - `mcp__t2i-google-imagen3__imagen_t2i` - Google Imagen3 画像生成（一括実行）
 - `mcp__t2i-fal-imagen4-ultra__imagen4_ultra_submit` - Fal.ai Imagen4 Ultra 画像生成開始
@@ -70,6 +92,18 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 - `mcp__i2v-fal-hailuo-02-pro__hailuo_02_submit` - 画像から動画生成開始
 - `mcp__i2v-fal-hailuo-02-pro__hailuo_02_status` - 動画生成ステータス確認
 - `mcp__i2v-fal-hailuo-02-pro__hailuo_02_result` - 動画生成結果取得
+- `mcp__t2v-fal-wan-v2-2-a14b-t2v__wan_v2_2_a14b_t2v_submit` - WAN v2.2テキストから動画生成開始
+- `mcp__t2v-fal-wan-v2-2-a14b-t2v__wan_v2_2_a14b_t2v_status` - WAN v2.2 T2V生成ステータス確認
+- `mcp__t2v-fal-wan-v2-2-a14b-t2v__wan_v2_2_a14b_t2v_result` - WAN v2.2 T2V生成結果取得
+- `mcp__i2v-fal-wan-v2-2-a14b-i2v__wan_v2_2_a14b_i2v_submit` - WAN v2.2画像から動画生成開始
+- `mcp__i2v-fal-wan-v2-2-a14b-i2v__wan_v2_2_a14b_i2v_status` - WAN v2.2 I2V生成ステータス確認
+- `mcp__i2v-fal-wan-v2-2-a14b-i2v__wan_v2_2_a14b_i2v_result` - WAN v2.2 I2V生成結果取得
+- `mcp__i2v-fal-bytedance-seedance-v1-lite__seedance_v1_lite_submit` - ByteDance Seedance V1 Lite生成開始
+- `mcp__i2v-fal-bytedance-seedance-v1-lite__seedance_v1_lite_status` - Seedance V1 Lite生成ステータス確認
+- `mcp__i2v-fal-bytedance-seedance-v1-lite__seedance_v1_lite_result` - Seedance V1 Lite生成結果取得
+- `mcp__i2v-fal-bytedance-omnihuman__omnihuman_i2v_submit` - OmniHuman画像から動画生成開始
+- `mcp__i2v-fal-bytedance-omnihuman__omnihuman_i2v_status` - OmniHuman I2V生成ステータス確認
+- `mcp__i2v-fal-bytedance-omnihuman__omnihuman_i2v_result` - OmniHuman I2V生成結果取得
 
 ### 動画変換
 - `mcp__v2v-fal-luma-ray2-modify__luma_ray2_submit` - 動画変換開始
@@ -84,6 +118,12 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2i-fal-imag
 - `mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_submit` - Pixverseリップシンク生成開始（制限: 5MB動画/30秒音声）
 - `mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_status` - Pixverseリップシンク生成ステータス確認
 - `mcp__v2v-fal-pixverse-lipsync__pixverse_lipsync_result` - Pixverseリップシンク生成結果取得
+- `mcp__v2v-fal-pixverse-extend__pixverse_extend_submit` - Pixverse動画拡張開始
+- `mcp__v2v-fal-pixverse-extend__pixverse_extend_status` - 動画拡張ステータス確認
+- `mcp__v2v-fal-pixverse-extend__pixverse_extend_result` - 動画拡張結果取得
+- `mcp__v2v-fal-topaz-upscale-video__topaz_upscale_submit` - Topaz動画アップスケール開始
+- `mcp__v2v-fal-topaz-upscale-video__topaz_upscale_status` - アップスケールステータス確認
+- `mcp__v2v-fal-topaz-upscale-video__topaz_upscale_result` - アップスケール結果取得
 
 ### 音楽生成
 - `mcp__t2m-google-lyria__lyria_generate` - Google Lyria音楽生成（一括実行）
@@ -155,6 +195,16 @@ claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__t2m-google-l
 ```
 
 **重要**: 音楽生成は段階的実行（submit/status/result）ではなく、`lyria_generate`での一括実行が正しい方法です。
+
+### 動画分析の正しい手順
+**Google Gemini 2.5-flashは一括実行可能：**
+
+1. **動画分析**
+```bash
+claude --mcp-config=.claude/mcp-kamuicode.json --allowedTools "mcp__video-analysis-google-gemini__analyze_video,Bash" -p "動画内容を詳細分析"
+```
+
+**重要**: 動画分析も段階的実行（submit/status/result）ではなく、`analyze_video`での一括実行が正しい方法です。日本語・英語での詳細な動画内容分析とキャプション生成に対応しています。
 
 ### Pixverseリップシンクの正しい手順
 **Pixverseは厳格な制限があるため、事前チェックが必須：**

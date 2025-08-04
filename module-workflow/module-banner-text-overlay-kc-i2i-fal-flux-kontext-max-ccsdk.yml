@@ -15,8 +15,8 @@ on:
         description: 'ベース画像のGoogle URL'
         required: true
         type: string
-      text-layout-strategy:
-        description: 'テキストレイアウト戦略'
+      text-overlay-prompt:
+        description: 'テキストオーバーレイプロンプト'
         required: true
         type: string
       branch-name:
@@ -82,7 +82,7 @@ jobs:
           USER_CONCEPT="${{ inputs.concept }}"
           USER_TEXT_CONTENT="${{ inputs.text_content }}"
           BASE_IMAGE_URL="${{ inputs.image-url }}"
-          TEXT_LAYOUT_STRATEGY="${{ inputs.text-layout-strategy }}"
+          TEXT_OVERLAY_PROMPT="${{ inputs.text-overlay-prompt }}"
           FOLDER_NAME="${{ inputs.folder-name }}"
           BANNER_INDEX="${{ inputs.banner_index }}"
           BANNERS_DIR="$FOLDER_NAME/banners-${BANNER_INDEX}"
@@ -90,7 +90,7 @@ jobs:
           echo "User concept: $USER_CONCEPT"
           echo "User text content: $USER_TEXT_CONTENT"
           echo "Base image URL: $BASE_IMAGE_URL"
-          echo "Text layout strategy: $TEXT_LAYOUT_STRATEGY"
+          echo "Text overlay prompt: $TEXT_OVERLAY_PROMPT"
           echo "Banner index: $BANNER_INDEX"
           echo "Target folder: $BANNERS_DIR"
           
@@ -123,7 +123,7 @@ jobs:
           **絶対に変更禁止のテキスト**: '$USER_TEXT_CONTENT'
           **ベース画像URL**: $BASE_IMAGE_URL
           **バナーコンセプト**: $USER_CONCEPT
-          **テキストレイアウト戦略**: $TEXT_LAYOUT_STRATEGY
+          **テキストオーバーレイプロンプト**: $TEXT_OVERLAY_PROMPT
 
           **最重要制約**:
           - テキスト内容「$USER_TEXT_CONTENT」は絶対に変更禁止
@@ -135,7 +135,7 @@ jobs:
           **実行手順**:
           1. mcp__i2i-fal-flux-kontext-max__flux_kontext_submit ツールでテキスト合成を開始
              - input_image_url: $BASE_IMAGE_URL
-             - prompt: 「テキスト '$USER_TEXT_CONTENT' を画像に合成してください。テキスト内容は一切変更せず、レイアウトとデザインのみ最適化してください。$TEXT_LAYOUT_STRATEGY」
+             - prompt: 「テキスト '$USER_TEXT_CONTENT' を画像に合成してください。テキスト内容は一切変更せず、レイアウトとデザインのみ最適化してください。$TEXT_OVERLAY_PROMPT」
           2. mcp__i2i-fal-flux-kontext-max__flux_kontext_status でステータス確認
           3. mcp__i2i-fal-flux-kontext-max__flux_kontext_result で結果取得してGoogle URLを取得
           4. **重要**: 生成時に取得したGoogle URLを「$BANNERS_DIR/image-url.txt」ファイルに保存
@@ -143,7 +143,7 @@ jobs:
 
           **テキスト合成の詳細指示**:
           - テキスト「$USER_TEXT_CONTENT」の内容は絶対に変更しない
-          - $TEXT_LAYOUT_STRATEGY に基づいて配置・スタイルを決定
+          - $TEXT_OVERLAY_PROMPT に基づいて配置・スタイルを決定
           - 読みやすさを最大化するフォント選択
           - 背景との対比を考慮した色選択
           - バナー広告として効果的な視覚インパクト

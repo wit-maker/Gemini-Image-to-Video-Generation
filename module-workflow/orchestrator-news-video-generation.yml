@@ -171,7 +171,7 @@ jobs:
       concept: ${{ inputs.concept }}
       text_content: ${{ needs.planning.outputs.news-title }}
       image-url: ${{ needs.title-background-generation.outputs.image-url }}
-      text-layout-strategy: "center_title_layout"
+      text-overlay-prompt: "center_title_layout"
       branch-name: ${{ needs.create-branch.outputs.branch-name }}
       folder-name: ${{ needs.create-branch.outputs.folder-name }}
       banner_index: "title"

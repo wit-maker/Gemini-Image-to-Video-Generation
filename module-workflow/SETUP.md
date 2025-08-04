@@ -30,9 +30,13 @@ mkdir -p .github/workflows
 # 全てのワークフローファイルをコピー
 cp kamuicode-workflow/module-workflow/*.yml .github/workflows/
 
-# 🆕 kamuicode設定ファイルもコピー（マルチモデル機能で必須）
-mkdir -p .github/workflows/kamuicode
-cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workflows/kamuicode/
+# 🆕 kamuicode設定ファイルもコピー（マルチモデル機能で必須）v0.6.0：usageディレクトリに移動
+mkdir -p .github/workflows/usage
+cp kamuicode-workflow/module-workflow/usage/kamuicode-usage.md .github/workflows/usage/
+
+# 🆕 v0.6.0新機能：詳細ドキュメントもコピー
+mkdir -p .github/workflows/docs
+cp kamuicode-workflow/module-workflow/docs/*.md .github/workflows/docs/
 
 # ファイルが正しくコピーされたか確認
 ls -la .github/workflows/
@@ -61,6 +65,8 @@ ls -la .github/workflows/
 ## 🆕 バナー生成モジュール
 # - module-banner-planning-ccsdk.yml
 # - module-banner-text-overlay-kc-i2i-fal-flux-kontext-max-ccsdk.yml
+# - module-banner-autonomous-generation-ccsdk.yml (🆕 自律的バナー生成) 🆕 v0.6.0
+# - module-banner-concept-to-prompt-planning.yml (🆕 バナーコンセプト企画) 🆕 v0.6.0
 
 ## 🆕 ニュース動画生成モジュール（v0.3.0新機能）
 # - module-news-planning-ccsdk.yml (📰 ニュース企画立案)
@@ -89,6 +95,7 @@ ls -la .github/workflows/
 # - orchestrator-i2v-fal-upload-test.yml (🆕 I2V FALアップロードテスト版) 🆕 v0.5.0
 # - orchestrator-i2v-generation-analysis-ccsdk.yml (🆕 I2V生成・解析統合 - Claude Code版) 🆕 v0.5.0
 # - orchestrator-v2v-pixverse-lipsync-single.yml (🆕 Pixverseリップシンク単体版) 🆕 v0.5.0
+# - orchestrator-banner-autonomous-improvement.yml (🆕 自律的バナー生成版) 🆕 v0.6.0
 ```
 
 ### 1.3 MCP設定ファイルの配置
@@ -145,15 +152,19 @@ mkdir -p .gemini
 - `[kamuicode提供のURL]`部分は実際のkamuicode MCPサーバーURLに置き換えてください
 - kamuicode APIキーの設定方法は、kamuicode提供者の指示に従ってください
 
-### 1.4 🆕 kamuicode-usage.mdファイル
+### 1.4 🆕 kamuicode-usage.mdファイル（v0.6.0更新）
 
 **重要**: マルチモデル対応機能で必要な設定ファイルです。
 
-#### ファイルの配置
+#### ファイルの配置（v0.6.0：ディレクトリ変更）
 ```bash
-# kamuicode使用方法ファイルを配置
-mkdir -p .github/workflows/kamuicode
-cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workflows/kamuicode/
+# kamuicode使用方法ファイルを配置（v0.6.0：usageディレクトリに移動）
+mkdir -p .github/workflows/usage
+cp kamuicode-workflow/module-workflow/usage/kamuicode-usage.md .github/workflows/usage/
+
+# 🆕 v0.6.0新機能：FFmpeg・ImageMagick使用ガイドも配置
+cp kamuicode-workflow/module-workflow/usage/ffmpeg-usage.md .github/workflows/usage/
+cp kamuicode-workflow/module-workflow/usage/imagemagick-usage.md .github/workflows/usage/
 ```
 
 #### ファイルの役割
@@ -179,12 +190,12 @@ cp kamuicode-workflow/module-workflow/kamuicode/kamuicode-usage.md .github/workf
 |---------|------|--------|----------|
 | `ANTHROPIC_API_KEY` | Claude API Key | **必須** | [Anthropic Console](https://console.anthropic.com/)でAPI Keyを作成 |
 | `PAT_TOKEN` | GitHub Personal Access Token | **必須** | Settings → Developer settings → Personal access tokens |
-| `GEMINI_API_KEY` | Gemini API Key | **必須** | [Google AI Studio](https://aistudio.google.com/)でAPI Keyを作成 |
-| `FAL_KEY` | FAL API Key | **必須** 🆕 | [FAL](https://fal.ai/)でアカウント作成し、APIキーを取得 |
+| `GEMINI_API_KEY` | Gemini API Key | **必須** 🆕 | [Google AI Studio](https://aistudio.google.com/)でAPI Keyを作成（v0.6.0：画像評価で必須） |
+| `FAL_KEY` | FAL API Key | **必須** | [FAL](https://fal.ai/)でアカウント作成し、APIキーを取得 |
 
-**🆕 v0.3.0での必要性の変更:**
-- `GEMINI_API_KEY`が**必須**に変更：従来のGCAモジュール＋ニュース動画生成システムでリップシンク解析に使用
-- GCA機能（動画分析等）とニュース動画機能の両方で必要
+**🆕 v0.6.0での必要性の変更:**
+- `GEMINI_API_KEY`が**必須**：従来のGCAモジュール＋ニュース動画生成＋**自律的バナー生成の画像評価**に使用
+- GCA機能（動画分析等）、ニュース動画機能、**AI画像評価システム**で必要
 
 ### 2.2 ANTHROPIC_API_KEYの取得方法
 
@@ -305,8 +316,15 @@ your-repo/
 │       └── orchestrator-multi-model-image-test.yml (🆕 マルチモデル画像テスト版)
 ├── .github/
 │   └── workflows/
-│       └── kamuicode/
-│           └── kamuicode-usage.md (🆕 マルチモデル機能で必須)
+│       ├── usage/ (🆕 v0.6.0：kamuicodeディレクトリから移動)
+│       │   ├── kamuicode-usage.md (🆕 マルチモデル機能で必須)
+│       │   ├── ffmpeg-usage.md (🆕 v0.6.0：FFmpeg詳細ガイド)
+│       │   └── imagemagick-usage.md (🆕 v0.6.0：ImageMagick詳細ガイド)
+│       └── docs/ (🆕 v0.6.0：詳細ドキュメント)
+│           ├── banner-evaluation-criteria.md (🆕 バナー評価基準)
+│           ├── community-service-guide.md (🆕 コミュニティサービス仕様)
+│           ├── premium-product-launch.md (🆕 プレミアム商品仕様)
+│           └── summer-sale-campaign.md (🆕 夏セール仕様)
 ├── .claude/
 │   └── mcp-kamuicode.json
 ├── .gemini/
@@ -327,7 +345,37 @@ your-repo/
 
 ## 🆕 ステップ5: 新機能の使用方法
 
-### 5.1 🆕 ニュース動画生成システム（v0.3.0）
+### 5.1 🆕 自律的バナー生成システム（v0.6.0）
+
+#### AI評価による品質保証付きプロフェッショナルバナー生成
+
+**`orchestrator-banner-autonomous-improvement.yml`** を使用すると、AI評価による品質保証機能を持つプロフェッショナルなバナーを自動生成できます。
+
+#### 🎨 使用手順
+1. GitHub Actionsの **orchestrator-banner-autonomous-improvement** を選択
+2. パラメータ入力：
+   ```
+   concept: "地域コミュニティサポートサービス案内"
+   text_content: "つながる！安心サポート"
+   banner_size: "square_1_1"
+   max_iterations: "5"
+   ```
+
+#### 🎯 生成される成果物
+- 🏆 品質保証済み最終バナー（70点以上）
+- 📊 最適化された画像プロンプト・テキストオーバーレイプロンプト
+- 📈 詳細な評価履歴・改善プロセス記録
+- 🔄 イテレーション別バナー比較
+- 📋 プロフェッショナルレベルの制作ドキュメント
+
+#### 🔧 技術的特徴
+- **Gemini Vision API評価**: 厳格な1-100点採点システム
+- **70点合格基準**: 技術品質・デザイン品質・商用価値の総合評価
+- **自動改善機能**: 評価結果に基づくプロンプト調整・画像後処理の自動実行
+- **ImageMagick・FFmpeg統合**: AI生成だけでは解決できない品質課題への技術的対応
+- **最大5回イテレーション**: 品質基準を満たすまで自動的に改善を繰り返し
+
+### 5.2 🆕 ニュース動画生成システム（v0.3.0）
 
 #### プロフェッショナルニュース番組の完全自動生成
 
@@ -359,7 +407,7 @@ your-repo/
 - **マルチモデル対応**: 全工程でモデル選択可能
 - **多言語対応**: 翻訳機能付き
 
-### 5.2 マルチモデル対応オーケストレータ
+### 5.3 マルチモデル対応オーケストレータ
 
 #### 動画生成: `orchestrator-multi-model-video-test.yml`
 
@@ -384,7 +432,7 @@ your-repo/
 - **対応モデル**: 全5種類の画像生成モデル
 - **成果物**: 高品質画像とプロンプト最適化結果
 
-### 5.3 モデル最適化機能
+### 5.4 モデル最適化機能
 
 計画モジュール（`module-planning-ccsdk.yml`, `module-planning-gca.yml`）にモデル指定機能が追加されました：
 

@@ -82,30 +82,30 @@ on:
       banner-concept-8:
         description: 'バナー8用コンセプト'
         value: ${{ jobs.planning.outputs.banner-concept-8 }}
-      text-layout-strategy-1:
-        description: 'バナー1用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-1 }}
-      text-layout-strategy-2:
-        description: 'バナー2用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-2 }}
-      text-layout-strategy-3:
-        description: 'バナー3用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-3 }}
-      text-layout-strategy-4:
-        description: 'バナー4用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-4 }}
-      text-layout-strategy-5:
-        description: 'バナー5用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-5 }}
-      text-layout-strategy-6:
-        description: 'バナー6用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-6 }}
-      text-layout-strategy-7:
-        description: 'バナー7用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-7 }}
-      text-layout-strategy-8:
-        description: 'バナー8用テキストレイアウト戦略'
-        value: ${{ jobs.planning.outputs.text-layout-strategy-8 }}
+      text-overlay-prompt-1:
+        description: 'バナー1用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-1 }}
+      text-overlay-prompt-2:
+        description: 'バナー2用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-2 }}
+      text-overlay-prompt-3:
+        description: 'バナー3用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-3 }}
+      text-overlay-prompt-4:
+        description: 'バナー4用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-4 }}
+      text-overlay-prompt-5:
+        description: 'バナー5用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-5 }}
+      text-overlay-prompt-6:
+        description: 'バナー6用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-6 }}
+      text-overlay-prompt-7:
+        description: 'バナー7用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-7 }}
+      text-overlay-prompt-8:
+        description: 'バナー8用テキストオーバーレイプロンプト'
+        value: ${{ jobs.planning.outputs.text-overlay-prompt-8 }}
     secrets:
       anthropic_api_key:
         description: 'Anthropic API Key'
@@ -138,14 +138,14 @@ jobs:
       banner-concept-6: ${{ steps.planning.outputs.banner-concept-6 }}
       banner-concept-7: ${{ steps.planning.outputs.banner-concept-7 }}
       banner-concept-8: ${{ steps.planning.outputs.banner-concept-8 }}
-      text-layout-strategy-1: ${{ steps.planning.outputs.text-layout-strategy-1 }}
-      text-layout-strategy-2: ${{ steps.planning.outputs.text-layout-strategy-2 }}
-      text-layout-strategy-3: ${{ steps.planning.outputs.text-layout-strategy-3 }}
-      text-layout-strategy-4: ${{ steps.planning.outputs.text-layout-strategy-4 }}
-      text-layout-strategy-5: ${{ steps.planning.outputs.text-layout-strategy-5 }}
-      text-layout-strategy-6: ${{ steps.planning.outputs.text-layout-strategy-6 }}
-      text-layout-strategy-7: ${{ steps.planning.outputs.text-layout-strategy-7 }}
-      text-layout-strategy-8: ${{ steps.planning.outputs.text-layout-strategy-8 }}
+      text-overlay-prompt-1: ${{ steps.planning.outputs.text-overlay-prompt-1 }}
+      text-overlay-prompt-2: ${{ steps.planning.outputs.text-overlay-prompt-2 }}
+      text-overlay-prompt-3: ${{ steps.planning.outputs.text-overlay-prompt-3 }}
+      text-overlay-prompt-4: ${{ steps.planning.outputs.text-overlay-prompt-4 }}
+      text-overlay-prompt-5: ${{ steps.planning.outputs.text-overlay-prompt-5 }}
+      text-overlay-prompt-6: ${{ steps.planning.outputs.text-overlay-prompt-6 }}
+      text-overlay-prompt-7: ${{ steps.planning.outputs.text-overlay-prompt-7 }}
+      text-overlay-prompt-8: ${{ steps.planning.outputs.text-overlay-prompt-8 }}
     
     steps:
       - name: Checkout repository
@@ -236,8 +236,8 @@ jobs:
              - $PLANNING_DIR/banner-concept-2.txt
              - （以下、バナー数分）
           8. 各バナー用のテキストレイアウト戦略を保存：
-             - $PLANNING_DIR/text-layout-strategy-1.txt
-             - $PLANNING_DIR/text-layout-strategy-2.txt
+             - $PLANNING_DIR/text-overlay-prompt-1.txt
+             - $PLANNING_DIR/text-overlay-prompt-2.txt
              - （以下、バナー数分）
 
           **ベース画像プロンプトの要件**:
@@ -327,14 +327,14 @@ jobs:
               exit 1
             fi
             
-            # テキストレイアウト戦略の確認
-            if [ -f "$PLANNING_DIR/text-layout-strategy-${i}.txt" ]; then
-              TEXT_LAYOUT_STRATEGY=$(head -3 "$PLANNING_DIR/text-layout-strategy-${i}.txt" | tr '\n' ' ')
-              echo "::notice::✅ Text layout strategy ${i} generated"
-              echo "Text layout strategy ${i}: $TEXT_LAYOUT_STRATEGY"
-              echo "text-layout-strategy-${i}=$TEXT_LAYOUT_STRATEGY" >> $GITHUB_OUTPUT
+            # テキストオーバーレイプロンプトの確認
+            if [ -f "$PLANNING_DIR/text-overlay-prompt-${i}.txt" ]; then
+              TEXT_OVERLAY_PROMPT=$(head -3 "$PLANNING_DIR/text-overlay-prompt-${i}.txt" | tr '\n' ' ')
+              echo "::notice::✅ Text overlay prompt ${i} generated"
+              echo "Text overlay prompt ${i}: $TEXT_OVERLAY_PROMPT"
+              echo "text-overlay-prompt-${i}=$TEXT_OVERLAY_PROMPT" >> $GITHUB_OUTPUT
             else
-              echo "::error::❌ Text layout strategy ${i} file not found"
+              echo "::error::❌ Text overlay prompt ${i} file not found"
               exit 1
             fi
           done

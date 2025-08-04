@@ -128,7 +128,7 @@ jobs:
           **画像URL**: $IMAGE_URL
 
           **実行手順**:
-          1. まず、\`.github/workflows/kamuicode/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
+          1. まず、\`.github/workflows/usage/kamuicode-usage.md\`ファイルを読み込んで、モデルタイプ「$MODEL_TYPE」に対応するMCPツール名を確認してください
           2. ファイルから以下の情報を抽出:
              - submitツール名（例: mcp__i2v-fal-hailuo-02-pro__hailuo_02_submit）
              - statusツール名（例: mcp__i2v-fal-hailuo-02-pro__hailuo_02_status）
@@ -145,7 +145,7 @@ jobs:
           9. **必須**: 取得した動画URLをBashツールで「$VIDEOS_DIR/video.mp4」にダウンロード保存
 
           **重要な注意点**:
-          - kamuicode-usage.mdから正しいツール名を読み取ること
+          - usage/kamuicode-usage.mdから正しいツール名を読み取ること
           - 動画生成は時間がかかるため、ステータス確認の間に適度な待機時間を入れること
           - Google URLの有効期限は約1時間のため、生成後すぐにダウンロード
           - 必ずGoogle提供の認証済URLを使用
