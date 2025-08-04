@@ -34,9 +34,17 @@ cp kamuicode-workflow/module-workflow/*.yml .github/workflows/
 mkdir -p .github/workflows/usage
 cp kamuicode-workflow/module-workflow/usage/kamuicode-usage.md .github/workflows/usage/
 
-# 🆕 v0.6.0新機能：詳細ドキュメントもコピー
+# 🆕 v0.6.0新機能：詳細ドキュメントもコピー（自律的バナー生成で必須）
 mkdir -p .github/workflows/docs
 cp kamuicode-workflow/module-workflow/docs/*.md .github/workflows/docs/
+
+# 確認：特に重要なファイル
+ls -la .github/workflows/docs/
+# 以下のファイルが必要です（自律的バナー生成で使用）：
+# - banner-evaluation-criteria.md    # バナー評価基準（システムが自動参照）
+# - summer-sale-campaign.md         # 夏セールキャンペーン仕様テンプレート
+# - community-service-guide.md      # コミュニティサービス案内バナー仕様テンプレート  
+# - premium-product-launch.md       # プレミアム商品ローンチキャンペーン仕様テンプレート
 
 # ファイルが正しくコピーされたか確認
 ls -la .github/workflows/
@@ -320,11 +328,11 @@ your-repo/
 │       │   ├── kamuicode-usage.md (🆕 マルチモデル機能で必須)
 │       │   ├── ffmpeg-usage.md (🆕 v0.6.0：FFmpeg詳細ガイド)
 │       │   └── imagemagick-usage.md (🆕 v0.6.0：ImageMagick詳細ガイド)
-│       └── docs/ (🆕 v0.6.0：詳細ドキュメント)
-│           ├── banner-evaluation-criteria.md (🆕 バナー評価基準)
-│           ├── community-service-guide.md (🆕 コミュニティサービス仕様)
-│           ├── premium-product-launch.md (🆕 プレミアム商品仕様)
-│           └── summer-sale-campaign.md (🆕 夏セール仕様)
+│       └── docs/ (🆕 v0.6.0：詳細ドキュメント・自律的バナー生成で必須)
+│           ├── banner-evaluation-criteria.md (🆕 バナー評価基準・システムが自動参照)
+│           ├── community-service-guide.md (🆕 コミュニティサービス仕様テンプレート)
+│           ├── premium-product-launch.md (🆕 プレミアム商品仕様テンプレート)
+│           └── summer-sale-campaign.md (🆕 夏セール仕様テンプレート)
 ├── .claude/
 │   └── mcp-kamuicode.json
 ├── .gemini/
@@ -352,14 +360,36 @@ your-repo/
 **`orchestrator-banner-autonomous-improvement.yml`** を使用すると、AI評価による品質保証機能を持つプロフェッショナルなバナーを自動生成できます。
 
 #### 🎨 使用手順
-1. GitHub Actionsの **orchestrator-banner-autonomous-improvement** を選択
-2. パラメータ入力：
+1. **重要**: 必要なテンプレートファイルが `.github/workflows/docs/` にコピーされていることを確認
+   ```bash
+   ls -la .github/workflows/docs/
+   # 以下のファイルが必要：
+   # - banner-evaluation-criteria.md
+   # - summer-sale-campaign.md
+   # - community-service-guide.md
+   # - premium-product-launch.md
    ```
-   concept: "地域コミュニティサポートサービス案内"
-   text_content: "つながる！安心サポート"
-   banner_size: "square_1_1"
-   max_iterations: "5"
+
+2. GitHub Actionsの **orchestrator-banner-autonomous-improvement** を選択
+
+3. パラメータ入力（2つの方式から選択）：
+   
+   **方式1: テンプレートファイルを使用（推奨）**
+   ```yaml
+   concept_file: "summer-sale-campaign"    # 拡張子(.md)なしで指定
+   text_content: "SALE 50% OFF"            # 画像に表示するテキスト
+   banner_size: "square_1_1"               # バナーサイズ
    ```
+   
+   **方式2: 直接テキスト入力**
+   ```yaml
+   concept: "夏の大感謝セール"              # 簡単なコンセプトテキスト
+   text_content: "つながる！安心サポート"      # 画像に表示するテキスト
+   banner_size: "square_1_1"               # バナーサイズ
+   ```
+
+4. **Run workflow** をクリック
+5. 約20-30分で70点以上の品質保証されたプロフェッショナルバナーが生成
 
 #### 🎯 生成される成果物
 - 🏆 品質保証済み最終バナー（70点以上）

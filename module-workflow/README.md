@@ -376,6 +376,51 @@ graph LR
 - **ImageMagick・FFmpeg統合**: AI生成だけでは解決できない品質課題への技術的対応
 - **プロフェッショナル品質保証**: 商用利用可能な品質の自動達成
 
+#### 📋 使用方法・ファイル配置ガイド
+
+**1. コンセプトファイルの作成・配置**
+```bash
+# コンセプトは、マークダウンファイル(.md)で作成し、.github/workflows/docsフォルダに保存
+mkdir -p .github/workflows/docs
+# 例：summer-sale-campaign.md、community-service-guide.md、premium-product-launch.md
+```
+
+**2. 利用可能なコンセプトテンプレート（すでに配置済み）**
+- `summer-sale-campaign.md` - 夏のセールキャンペーン仕様
+- `community-service-guide.md` - コミュニティサービス案内バナー仕様
+- `premium-product-launch.md` - プレミアム商品ローンチキャンペーン仕様
+- `banner-evaluation-criteria.md` - バナー評価基準（評価システムが自動参照）
+
+**3. GitHub Actions実行時の指定方法**
+```yaml
+# Run Workflowで以下を指定:
+concept_file: "summer-sale-campaign"  # 拡張子(.md)なしで指定
+text_content: "SALE 50% OFF"          # 画像に表示するテキスト（英語・数字）
+banner_size: "square_1_1"             # バナーサイズ選択
+```
+
+**4. ファイル構成例**
+```
+.github/workflows/docs/
+├── summer-sale-campaign.md           # 夏セール仕様（テンプレート有）
+├── community-service-guide.md        # コミュニティサービス仕様（テンプレート有）
+├── premium-product-launch.md         # プレミアム商品仕様（テンプレート有）
+└── banner-evaluation-criteria.md     # 評価基準（テンプレート有）
+```
+
+**5. 実行手順**
+1. **GitHub Actions**の**orchestrator-banner-autonomous-improvement**を選択
+2. **Run workflow**をクリック
+3. パラメータ入力：
+   - `concept_file`: `summer-sale-campaign` （拡張子なし）
+   - `text_content`: `SALE 50% OFF` （画像に表示するテキスト）
+   - `banner_size`: `square_1_1` （バナーサイズ）
+4. **Run workflow**実行
+5. 約20-30分で70点以上の品質保証されたプロフェッショナルバナーが生成
+
+**6. カスタムコンセプトの作成**
+既存テンプレートを参考に、独自のコンセプトファイルを`.github/workflows/docs/`に作成可能。ターゲット層、ブランドイメージ、デザイン要件、メッセージング戦略等を詳細に記載してください。
+
 ## 🧩 モジュール詳細（36種類）🆕
 
 各オーケストレータは以下のモジュールを組み合わせて動作します。
