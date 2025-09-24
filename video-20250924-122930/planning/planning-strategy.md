@@ -1,0 +1,1 @@
+Image prompt focuses on static beauty: high detail, perfect lighting, and composition for a single, stunning shot. Video prompt introduces dynamic elements: gentle wind, falling petals, and the cat's subtle actions to bring the scene to life with natural, flowing movement.

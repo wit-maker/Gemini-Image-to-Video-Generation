@@ -1,0 +1,1 @@
+A photorealistic, high-detail 4k image of a fluffy calico cat playfully chasing a falling cherry blossom petal under a massive, ancient sakura tree in full bloom. The ground is covered in a delicate pink carpet of petals. Soft, warm sunlight filters through the branches, creating a dreamy, cinematic atmosphere with vibrant colors and sharp focus on the cat.
