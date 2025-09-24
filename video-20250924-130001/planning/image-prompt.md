@@ -1,0 +1,1 @@
+A photorealistic, high-detail 4K image of a playful Japanese Bobtail cat frolicking under a magnificent cherry blossom tree in full bloom. Soft, cinematic late-afternoon sunlight filters through the branches, casting gentle shadows. Vibrant pink petals are scattered on the lush green grass, creating a serene and beautiful scene with sharp focus and rich textures.
