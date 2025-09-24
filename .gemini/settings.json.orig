@@ -4,8 +4,8 @@
   "httpUrl": "https://kamui-code.ai/t2i/fal/imagen4/fast",
   "timeout": 300000
   },
-  "i2v-fal-hailuo-02-pro": {
-  "httpUrl": "https://kamui-code.ai/i2v/fal/minimax/hailuo-02/pro",
+  "i2v-fal-hailuo-02-fast": {
+  "httpUrl": "https://kamui-code.ai/i2v/fal/minimax/hailuo-02/fast",
   "timeout": 300000
   }
   },
