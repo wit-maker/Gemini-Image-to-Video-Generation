@@ -84,7 +84,7 @@ jobs:
              - 1行のテキストで作成
              
           4. **動画生成用プロンプト作成**:
-             - Hailuo-02 Pro に最適化
+             - Hailuo-02 fast に最適化
              - 動きの要素を強調
              - 画像から動画への変換に適した指示
              - 1行のテキストで作成
@@ -277,7 +277,7 @@ jobs:
       with:
         ref: ${{ needs.setup-branch.outputs.branch-name }}
         
-    - name: 🎬 動画生成エージェント (Hailuo-02 Pro)
+    - name: 🎬 動画生成エージェント (Hailuo-02 fast)
       id: generate
       uses: google-gemini/gemini-cli-action@main
       with:
@@ -297,10 +297,10 @@ jobs:
              mkdir -p ${{ needs.setup-branch.outputs.folder-name }}/videos
              ```
           
-          2. **重要**: kamuicodeの正しい手順でi2v-fal-hailuo-02-proを使用:
-             - `mcp__i2v-fal-hailuo-02-pro__hailuo_02_submit` で動画生成開始（画像URLとして`${{ needs.generate-image.outputs.image-url }}`を使用）
-             - `mcp__i2v-fal-hailuo-02-pro__hailuo_02_status` でステータス確認
-             - `mcp__i2v-fal-hailuo-02-pro__hailuo_02_result` で結果取得とダウンロード
+          2. **重要**: kamuicodeの正しい手順でi2v-fal-Hailuo-02-fastを使用:
+             - `mcp__i2v-fal-Hailuo-02-fast__hailuo_02_submit` で動画生成開始（画像URLとして`${{ needs.generate-image.outputs.image-url }}`を使用）
+             - `mcp__i2v-fal-Hailuo-02-fast__hailuo_02_status` でステータス確認
+             - `mcp__i2v-fal-Hailuo-02-fast__hailuo_02_result` で結果取得とダウンロード
           
           3. **resultツール使用**: `hailuo_02_result`ツールでリクエストIDから動画URLを取得
              - リクエストIDのみを使用（他のパラメータは不要）
@@ -527,7 +527,7 @@ jobs:
         ## Generation Pipeline
         1. ✅ Planning: Image & Video prompt optimization
         2. ✅ Image Generation: Imagen4 Fast
-        3. ✅ Video Generation: Hailuo-02 Pro (I2V)
+        3. ✅ Video Generation: Hailuo-02 fast (I2V)
         4. ✅ Video Analysis: Gemini Vision
         
         ---
@@ -572,7 +572,7 @@ jobs:
         ## Generation Pipeline
         1. 📋 **Planning**: Gemini optimized prompts for each stage
         2. 🖼️ **Image**: Imagen4 Fast generation
-        3. 🎬 **Video**: Hailuo-02 Pro I2V conversion
+        3. 🎬 **Video**: Hailuo-02 fast I2V conversion
         4. 📊 **Analysis**: Gemini Vision evaluation
         
         ## Generated Files
@@ -585,7 +585,7 @@ jobs:
         ## Workflow Status
         - ✅ Planning: Completed with Gemini
         - ✅ Image Generation: Completed with Imagen4 Fast
-        - ✅ Video Generation: Completed with Hailuo-02 Pro
+        - ✅ Video Generation: Completed with Hailuo-02 fast
         - ✅ Video Analysis: Completed with Gemini Vision
         
         🤖 Generated with [Claude Code](https://claude.ai/code)
