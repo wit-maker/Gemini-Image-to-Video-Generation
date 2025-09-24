@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+  "t2i-fal-imagen4-fast": {
+  "httpUrl": "https://kamui-code.ai/t2i/fal/imagen4/fast",
+  "timeout": 300000
+  },
+  "i2v-fal-hailuo-02-pro": {
+  "httpUrl": "https://kamui-code.ai/i2v/fal/minimax/hailuo-02/pro",
+  "timeout": 300000
+  }
+  },
+  "coreTools": [
+  "ReadFileTool",
+  "WriteFileTool",
+  "EditFileTool",
+  "ShellTool"
+  ]
+}
