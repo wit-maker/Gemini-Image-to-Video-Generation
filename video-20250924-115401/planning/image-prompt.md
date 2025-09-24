@@ -1,0 +1,1 @@
+A masterpiece, photorealistic, high-detail 4K image of a fluffy calico cat playfully batting at falling cherry blossom petals under a magnificent, blooming sakura tree. The scene is bathed in the soft, warm light of a spring afternoon, creating a gentle bokeh effect in the background, capturing a perfect, tranquil moment.

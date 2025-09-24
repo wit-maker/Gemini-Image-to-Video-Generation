@@ -1,0 +1,1 @@
+A cinematic slow-motion video of a playful cat under a cherry blossom tree. A gentle breeze rustles the branches, causing a shower of pink petals to drift down slowly. The cat, with soft fur, gracefully jumps and paws at the floating petals. The camera slowly pans, capturing the serene and dynamic interaction, creating a beautiful, flowing scene.
