@@ -1,0 +1,1 @@
+Image prompt focuses on high-fidelity, static beauty, emphasizing composition, lighting, and texture for a photorealistic masterpiece. Video prompt introduces a narrative of movement, directing the AI to animate the scene by describing the cat's actions and environmental dynamics like wind and falling petals, prioritizing fluid motion and a sense of life.
